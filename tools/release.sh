@@ -59,15 +59,16 @@ fi
   = "$VERSION" ] || fail "the built app's version is not $VERSION"
 
 notarize() {
-  local result id status
+  # "status" and "state" are read-only specials in zsh; hence "verdict"
+  local result id verdict
   echo "notarizing $(basename "$1"): waiting for Apple's verdict, usually minutes, silent meanwhile"
   result=$(xcrun notarytool submit "$1" --keychain-profile "$PROFILE" --wait --output-format json) ||
     true
   id=$(plutil -extract id raw - <<<"$result" 2>/dev/null) || fail "notarytool answered: $result"
-  status=$(plutil -extract status raw - <<<"$result")
-  if [ "$status" != Accepted ]; then
+  verdict=$(plutil -extract status raw - <<<"$result")
+  if [ "$verdict" != Accepted ]; then
     xcrun notarytool log "$id" --keychain-profile "$PROFILE" >&2 || true
-    fail "notarization of $(basename "$1") ended $status (submission $id)"
+    fail "notarization of $(basename "$1") ended $verdict (submission $id)"
   fi
   echo "notarized $(basename "$1"): submission $id"
 }
