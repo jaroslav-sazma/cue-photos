@@ -1,0 +1,16 @@
+{
+  "name": "cuephotos-webbridge",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Builds Photos/Resources/WebBridge.js from the GPTK api layer plus the bridge entry",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "esbuild": "^0.27.2",
+    "typescript": "^6.0.3"
+  }
+}

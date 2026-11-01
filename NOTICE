@@ -1,0 +1,14 @@
+Cue: Pick & Place (for Google Photos)
+Copyright (C) 2026 Jaroslav Sazma
+Licensed under GPL-3.0-or-later (see LICENSE).
+
+This project vendors the API layer of Google Photos Toolkit as a git submodule at
+third_party/gptk:
+
+  Google Photos Toolkit
+  https://github.com/xob0t/Google-Photos-Toolkit
+  Copyright (c) xob0t
+  Licensed under the MIT License (see third_party/gptk/LICENSE).
+
+The built bridge bundle Photos/Resources/WebBridge.js contains code compiled from that
+submodule together with this project's bridge sources.

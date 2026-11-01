@@ -1,0 +1,1478 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld per row": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld na řádku"
+          }
+        }
+      }
+    },
+    "%lld photos": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotky"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotek"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotka"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotek"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld photo"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld photos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybráno: %lld"
+          }
+        }
+      }
+    },
+    "About Cue: Pick & Place…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O aplikaci Cue: Pick & Place…"
+          }
+        }
+      }
+    },
+    "Add %lld photos to album": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld fotky do alba"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld fotek do alba"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld fotku do alba"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidat %lld fotek do alba"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Add the selection to an album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat výběr do alba"
+          }
+        }
+      }
+    },
+    "Add to Album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat do alba"
+          }
+        }
+      }
+    },
+    "Add to album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat do alba"
+          }
+        }
+      }
+    },
+    "Added %lld photos to “%@”": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidány %lld fotky do alba „%@“"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidáno %lld fotek do alba „%@“"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidána %lld fotka do alba „%@“"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přidáno %lld fotek do alba „%@“"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Added %lld photos; %lld stayed selected because %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidáno fotek: %1$lld; %2$lld zůstalo ve výběru (%3$@)"
+          }
+        }
+      }
+    },
+    "Album index failed": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Index alb selhal"
+          }
+        }
+      }
+    },
+    "Album name": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název alba"
+          }
+        }
+      }
+    },
+    "Album renamed to “%@”": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Album přejmenováno na „%@“"
+          }
+        }
+      }
+    },
+    "Album shared; %lld invitations sent": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Album nasdíleno, odeslána %lld pozvánka"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Album nasdíleno, odeslány %lld pozvánky"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Album nasdíleno, odesláno %lld pozvánek"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Album nasdíleno, odesláno %lld pozvánek"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Album shared; %lld invitation sent"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Album shared; %lld invitations sent"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Albums": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alba"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vše"
+          }
+        }
+      }
+    },
+    "An operation is in progress": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probíhá operace"
+          }
+        }
+      }
+    },
+    "Another operation is still running.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jiná operace stále běží."
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zrušit"
+          }
+        }
+      }
+    },
+    "Checking which photos are already in albums (%lld/%lld).": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zjišťuji, které fotky už jsou v albech (%lld/%lld)."
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zavřít"
+          }
+        }
+      }
+    },
+    "Columns": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sloupce"
+          }
+        }
+      }
+    },
+    "Connecting to Google Photos…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojuji se ke Google Photos…"
+          }
+        }
+      }
+    },
+    "Connection failed": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojení selhalo"
+          }
+        }
+      }
+    },
+    "Couldn't load albums": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alba se nepodařilo načíst"
+          }
+        }
+      }
+    },
+    "Couldn't load photos": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotky se nepodařilo načíst"
+          }
+        }
+      }
+    },
+    "Create & Add": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit a přidat"
+          }
+        }
+      }
+    },
+    "Day": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den"
+          }
+        }
+      }
+    },
+    "Deselect": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zrušit výběr"
+          }
+        }
+      }
+    },
+    "Download": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhnout"
+          }
+        }
+      }
+    },
+    "Download cancelled — %lld files saved, the rest stayed selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stahování zrušeno — uloženo souborů: %lld, zbytek zůstal vybraný"
+          }
+        }
+      }
+    },
+    "Download originals to a folder": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhnout originály do složky"
+          }
+        }
+      }
+    },
+    "Downloaded %lld files": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženy %lld soubory"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženo %lld souborů"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Stažen %lld soubor"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Staženo %lld souborů"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Downloaded %lld files; %lld failed and stayed selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staženo souborů: %1$lld; %2$lld selhalo a zůstaly vybrané"
+          }
+        }
+      }
+    },
+    "Each address receives an email invitation to join the album.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na každou adresu odejde e-mailová pozvánka do alba."
+          }
+        }
+      }
+    },
+    "Edit Album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit album"
+          }
+        }
+      }
+    },
+    "Email addresses, separated by commas": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-mailové adresy oddělené čárkami"
+          }
+        }
+      }
+    },
+    "Filters": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtry"
+          }
+        }
+      }
+    },
+    "From": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Od"
+          }
+        }
+      }
+    },
+    "Google Photos keeps trashed items for 60 days.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Photos drží položky v koši 60 dní."
+          }
+        }
+      }
+    },
+    "Google did not apply the rename.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google přejmenování neprovedl."
+          }
+        }
+      }
+    },
+    "Google empties trash after 60 days": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google koš po 60 dnech vysype"
+          }
+        }
+      }
+    },
+    "Group": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seskupení"
+          }
+        }
+      }
+    },
+    "Group by": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seskupit podle"
+          }
+        }
+      }
+    },
+    "Group photos by day or month": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seskupit fotky po dnech nebo po měsících"
+          }
+        }
+      }
+    },
+    "Indexing albums %lld/%lld…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indexuji alba %lld/%lld…"
+          }
+        }
+      }
+    },
+    "Keep Working": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nechat doběhnout"
+          }
+        }
+      }
+    },
+    "Limit to date range": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omezit obdobím"
+          }
+        }
+      }
+    },
+    "Loading albums…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Načítám alba…"
+          }
+        }
+      }
+    },
+    "Loading photos…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Načítám fotky…"
+          }
+        }
+      }
+    },
+    "Loading photos… %lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Načítám fotky… %lld"
+          }
+        }
+      }
+    },
+    "Month": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Měsíc"
+          }
+        }
+      }
+    },
+    "More": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Více"
+          }
+        }
+      }
+    },
+    "Move %lld photos to the trash?": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přesunout %lld fotky do koše?"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přesunout %lld fotek do koše?"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přesunout %lld fotku do koše?"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Přesunout %lld fotek do koše?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Move the selection to the trash": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesunout výběr do koše"
+          }
+        }
+      }
+    },
+    "Move to Trash": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesunout do koše"
+          }
+        }
+      }
+    },
+    "Moved %lld photos to the trash": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotky přesunuty do koše"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotek přesunuto do koše"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotka přesunuta do koše"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld fotek přesunuto do koše"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Moved %lld photos to the trash; %lld failed and stayed selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do koše přesunuto fotek: %1$lld; %2$lld se nepodařilo a zůstaly vybrané"
+          }
+        }
+      }
+    },
+    "Newest first": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Od nejnovějších"
+          }
+        }
+      }
+    },
+    "No photos": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádné fotky"
+          }
+        }
+      }
+    },
+    "Not affiliated with, endorsed by, or sponsored by Google. Google Photos is a trademark of Google LLC.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nezávislý projekt — není spojen s Googlem, podporován ani sponzorován. Google Photos je ochranná známka Google LLC."
+          }
+        }
+      }
+    },
+    "Not in album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mimo album"
+          }
+        }
+      }
+    },
+    "Not selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nevybráno"
+          }
+        }
+      }
+    },
+    "Nothing matches the current filters.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuálním filtrům nic neodpovídá."
+          }
+        }
+      }
+    },
+    "Nothing selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic není vybráno"
+          }
+        }
+      }
+    },
+    "Oldest first": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Od nejstarších"
+          }
+        }
+      }
+    },
+    "Open preview": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevřít náhled"
+          }
+        }
+      }
+    },
+    "Or create a new album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nebo vytvořit nové album"
+          }
+        }
+      }
+    },
+    "Photos per row": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Počet fotek na řádku"
+          }
+        }
+      }
+    },
+    "Photos you select anywhere appear here.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotky, které kdekoliv vyberete, se objeví tady."
+          }
+        }
+      }
+    },
+    "Preparing the album index": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připravuji index alb"
+          }
+        }
+      }
+    },
+    "Quit Anyway": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přesto ukončit"
+          }
+        }
+      }
+    },
+    "Quitting now interrupts it. Photos not yet processed stay selected.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukončení ji přeruší. Nezpracované fotky zůstanou vybrané."
+          }
+        }
+      }
+    },
+    "Refresh": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizovat"
+          }
+        }
+      }
+    },
+    "Reload from Google Photos": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znovu načíst z Google Photos"
+          }
+        }
+      }
+    },
+    "Remove %lld photos from this album?": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebrat %lld fotku z tohoto alba?"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebrat %lld fotky z tohoto alba?"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebrat %lld fotek z tohoto alba?"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebrat %lld fotek z tohoto alba?"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Remove %lld photo from this album?"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Remove %lld photos from this album?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Remove from Album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat z alba"
+          }
+        }
+      }
+    },
+    "Remove from album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat z alba"
+          }
+        }
+      }
+    },
+    "Remove the selected photos from this album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebere vybrané fotky z tohoto alba"
+          }
+        }
+      }
+    },
+    "Removed %lld photos from “%@”": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebrána %lld fotka z alba „%@“"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebrány %lld fotky z alba „%@“"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebráno %lld fotek z alba „%@“"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Odebráno %lld fotek z alba „%@“"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Removed %lld photo from “%@”"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Removed %lld photos from “%@”"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Removed from the album: %@; stayed selected: %@ (%@)": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Z alba odebráno: %1$@; vybráno zůstalo: %2$@ (%3$@)"
+          }
+        }
+      }
+    },
+    "Rename Album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přejmenovat album"
+          }
+        }
+      }
+    },
+    "Rename album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přejmenovat album"
+          }
+        }
+      }
+    },
+    "Reset filters": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit filtry"
+          }
+        }
+      }
+    },
+    "Restore": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit"
+          }
+        }
+      }
+    },
+    "Restore the selected photos from the trash": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnovit vybrané fotky z koše"
+          }
+        }
+      }
+    },
+    "Restored %lld photos": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Obnoveny %lld fotky"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Obnoveno %lld fotek"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Obnovena %lld fotka"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Obnoveno %lld fotek"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Restored %lld photos; %lld failed and stayed selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obnoveno fotek: %1$lld; %2$lld se nepodařilo a zůstaly vybrané"
+          }
+        }
+      }
+    },
+    "Retry": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložit"
+          }
+        }
+      }
+    },
+    "Scope": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozsah"
+          }
+        }
+      }
+    },
+    "Search albums": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledat album"
+          }
+        }
+      }
+    },
+    "Select": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat"
+          }
+        }
+      }
+    },
+    "Selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybráno"
+          }
+        }
+      }
+    },
+    "Selection": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výběr"
+          }
+        }
+      }
+    },
+    "Selection cleared": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výběr zrušen"
+          }
+        }
+      }
+    },
+    "Send Invites": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odeslat pozvánky"
+          }
+        }
+      }
+    },
+    "Share Album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílet album"
+          }
+        }
+      }
+    },
+    "Show the selected photos": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit vybrané fotky"
+          }
+        }
+      }
+    },
+    "Sign Out": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit se"
+          }
+        }
+      }
+    },
+    "Sort": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řazení"
+          }
+        }
+      }
+    },
+    "Sort albums": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řazení alb"
+          }
+        }
+      }
+    },
+    "Sort order": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řazení"
+          }
+        }
+      }
+    },
+    "The folder is not writable — %lld files saved, the rest stayed selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do složky nelze zapisovat — uloženo souborů: %lld, zbytek zůstal vybraný"
+          }
+        }
+      }
+    },
+    "The photos stay in your library and in any other albums.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotky zůstanou v knihovně i v ostatních albech."
+          }
+        }
+      }
+    },
+    "This app is a native interface on top of the official Google Photos website. You sign in to Google yourself, right here in the app, and everything you do — browsing, sorting into albums, downloading — happens inside that session, exactly as if you clicked through photos.google.com by hand.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato aplikace je nativní rozhraní postavené nad oficiálním webem Google Photos. Ke Googlu se přihlašujete sami, přímo v aplikaci, a všechno, co děláte — prohlížení, třídění do alb, stahování — se odehrává uvnitř této relace, přesně jako byste na photos.google.com klikali ručně."
+          }
+        }
+      }
+    },
+    "This doesn’t look like an email address: %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle nevypadá jako e-mailová adresa: %@"
+          }
+        }
+      }
+    },
+    "Title (A–Z)": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podle názvu (A–Z)"
+          }
+        }
+      }
+    },
+    "To": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do"
+          }
+        }
+      }
+    },
+    "Trash": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koš"
+          }
+        }
+      }
+    },
+    "Try Again": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
+    "Undo": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrátit"
+          }
+        }
+      }
+    },
+    "Untitled album": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Album bez názvu"
+          }
+        }
+      }
+    },
+    "Version %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verze %@"
+          }
+        }
+      }
+    },
+    "Your photos and your login never leave the connection between this Mac and Google. The app collects nothing, sends nothing anywhere else and keeps no copies beyond a local thumbnail cache and your current selection.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše fotky ani přihlášení nikdy neopustí spojení mezi tímto Macem a Googlem. Aplikace nic nesbírá, nikam jinam nic neposílá a kromě lokální mezipaměti náhledů a aktuálního výběru si nic neukládá."
+          }
+        }
+      }
+    },
+    "the operation was interrupted": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "operace byla přerušena"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
