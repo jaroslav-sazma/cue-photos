@@ -173,7 +173,15 @@ struct PhotoGridView: NSViewRepresentable {
                     snapshot.appendItems(section.items.map(\.dedupKey), toSection: section.id)
                 }
                 selectedKeys = newSelection
-                dataSource.apply(snapshot, animatingDifferences: false)
+                // animatingDifferences: false is a reloadData in AppKit — the content
+                // size collapses for a beat and the clip view yanks the scroll
+                // position while pages stream in. A real diff keeps the viewport
+                // still; the zero-duration group suppresses the insert animation.
+                NSAnimationContext.runAnimationGroup { animation in
+                    animation.duration = 0
+                    animation.allowsImplicitAnimation = false
+                    dataSource.apply(snapshot, animatingDifferences: true)
+                }
                 // same ids can carry new data (rotated thumb URLs, live items replacing
                 // persisted fallbacks), so visible cells reload from itemsByKey
                 reconfigureVisibleCells()

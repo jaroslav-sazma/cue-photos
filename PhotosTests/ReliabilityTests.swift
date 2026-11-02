@@ -130,3 +130,27 @@ struct SearchNormalizationTests {
         #expect(!"Školka".localizedSearchContains("skolkax"))
     }
 }
+
+struct PageTokenGuardTests {
+    @Test func stopsOnImmediateRepeat() {
+        var tokens = PageTokenGuard()
+        #expect(tokens.next("A") == "A")
+        #expect(tokens.next("A") == nil)
+    }
+
+    @Test func stopsOnLongerCycle() {
+        var tokens = PageTokenGuard()
+        #expect(tokens.next("A") == "A")
+        #expect(tokens.next("B") == "B")
+        #expect(tokens.next("C") == "C")
+        #expect(tokens.next("A") == nil)
+    }
+
+    @Test func passesDistinctTokensAndEndsOnNil() {
+        var tokens = PageTokenGuard()
+        #expect(tokens.next("A") == "A")
+        #expect(tokens.next("B") == "B")
+        #expect(tokens.next(nil) == nil)
+        #expect(tokens.next("") == nil)
+    }
+}

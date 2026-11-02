@@ -91,6 +91,7 @@ final class LibraryStore {
         do {
             var pageId: String?
             var fromTimestamp: Double?
+            var tokens = PageTokenGuard()
             var pages = 0
             repeat {
                 let page = try await service.libraryPage(fromTimestamp: fromTimestamp, pageId: pageId)
@@ -101,8 +102,7 @@ final class LibraryStore {
                     revision += 1
                 }
                 phase = .loading(loadedCount: loaded.count)
-                guard page.nextPageId != pageId else { break }
-                pageId = page.nextPageId
+                pageId = tokens.next(page.nextPageId)
                 pages += 1
                 // gptk pages the timeline by walking lastItemTimestamp - 1 alongside the page id
                 fromTimestamp = page.lastItemTimestamp.map { $0 - 1 }
@@ -205,6 +205,7 @@ final class AlbumMembershipIndex {
             for album in albums {
                 var albumKeys = Set<String>()
                 var pageId: String?
+                var tokens = PageTokenGuard()
                 var pages = 0
                 repeat {
                     let page = try await service.albumItemsPage(album, pageId: pageId)
@@ -213,8 +214,7 @@ final class AlbumMembershipIndex {
                         albumKeys.insert(item.dedupKey)
                     }
                     storesLog.info("membership album \(done + 1)/\(albums.count): page \(pages + 1), \(page.items.count) items, more=\(page.nextPageId != nil)")
-                    guard page.nextPageId != pageId else { break }
-                    pageId = page.nextPageId
+                    pageId = tokens.next(page.nextPageId)
                     pages += 1
                 } while pageId != nil && pages < 10_000
                 collected.formUnion(albumKeys)
@@ -281,14 +281,14 @@ final class TrashStore {
         var loaded: [MediaItem] = []
         do {
             var pageId: String?
+            var tokens = PageTokenGuard()
             var pages = 0
             repeat {
                 let page = try await service.trashPage(pageId: pageId)
                 guard current == generation, !Task.isCancelled else { return }
                 loaded.append(contentsOf: page.items)
                 phase = .loading(loadedCount: loaded.count)
-                guard page.nextPageId != pageId else { break }
-                pageId = page.nextPageId
+                pageId = tokens.next(page.nextPageId)
                 pages += 1
             } while pageId != nil && pages < 10_000
             guard current == generation else { return }
@@ -363,6 +363,7 @@ final class AlbumContentsStore {
         var seen = Set<String>()
         do {
             var pageId: String?
+            var tokens = PageTokenGuard()
             var pages = 0
             repeat {
                 let page = try await service.albumItemsPage(album, pageId: pageId)
@@ -377,8 +378,7 @@ final class AlbumContentsStore {
                 items = loaded
                 revision += 1
                 phase = .loading(loadedCount: loaded.count)
-                guard page.nextPageId != pageId else { break }
-                pageId = page.nextPageId
+                pageId = tokens.next(page.nextPageId)
                 pages += 1
             } while pageId != nil && pages < 10_000
             guard current == generation else { return }

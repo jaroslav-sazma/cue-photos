@@ -48,6 +48,20 @@ nonisolated func photoCountText(_ count: Int) -> String {
     String(localized: "\(count) photos")
 }
 
+// Google's pagers hand out pageId tokens in a cycle: the last page's token points
+// back to the first page (observed on snAcKc, 2026-11-02 — a 3-page album repeats
+// 300/300/131 items forever). Pagination must stop at the first token it has
+// already used, not just when a token repeats back-to-back.
+nonisolated struct PageTokenGuard {
+    private var seen: Set<String> = []
+
+    // the token to request next, or nil when pagination is finished or cycling
+    mutating func next(_ nextPageId: String?) -> String? {
+        guard let nextPageId, !nextPageId.isEmpty else { return nil }
+        return seen.insert(nextPageId).inserted ? nextPageId : nil
+    }
+}
+
 nonisolated struct MediaItem: Codable, Identifiable, Hashable, Sendable {
     var mediaKey: String
     // dedupKey is the stable identity across sources: album pages return
