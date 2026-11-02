@@ -8,19 +8,24 @@ import os
 actor ThumbnailLoader {
     private let googleSession: GoogleSession
     private let cache = NSCache<NSString, CachedThumbnail>()
-    private var inFlight: [String: Task<CGImage, Error>] = [:]
+    // decoded images are ~1 MB each and evict fast; the encoded originals are
+    // ~30 kB, so this tier keeps whole albums re-decodable without the network
+    private let dataCache = NSCache<NSString, NSData>()
+    private var inFlight: [String: Task<(CGImage, Data?), Error>] = [:]
     // scale-design bound on concurrent network fetches; fast scrolling must not
     // queue thousands of requests ahead of the visible items
-    private let gate = RPCLimiter(limit: 12)
+    private let gate = RPCLimiter(limit: 24)
     private let log = Logger(subsystem: "app.cue.photos", category: "thumbnails")
 
     init(session: GoogleSession) {
         googleSession = session
         cache.totalCostLimit = 256 * 1024 * 1024
+        dataCache.totalCostLimit = 128 * 1024 * 1024
     }
 
     func clearCache() {
         cache.removeAllObjects()
+        dataCache.removeAllObjects()
     }
 
     // cacheKey outlives the URL on purpose: thumbnail base URLs rotate and expire
@@ -30,11 +35,15 @@ actor ThumbnailLoader {
             return hit.image
         }
         if let running = inFlight[key as String] {
-            return try await running.value
+            return try await running.value.0
         }
         let session = googleSession
         let gate = gate
-        let task = Task.detached(priority: .utility) {
+        let encoded = dataCache.object(forKey: key) as Data?
+        let task = Task.detached(priority: .utility) { () -> (CGImage, Data?) in
+            if let encoded {
+                return (try Self.decode(encoded, maxPixelSize: pixelSize), nil)
+            }
             // -c crops square, -k-no drops the video watermark and the auth requirement
             // per gptk's parser notes; cookies cover what the flags don't
             let flags = crop ? "-c-k-no" : "-k-no"
@@ -53,13 +62,16 @@ actor ThumbnailLoader {
             guard response.statusCode == 200 else {
                 throw PhotosError.mediaFetch("thumbnail HTTP \(response.statusCode)")
             }
-            return try Self.decode(data, maxPixelSize: pixelSize)
+            return (try Self.decode(data, maxPixelSize: pixelSize), data)
         }
         inFlight[key as String] = task
         defer { inFlight[key as String] = nil }
         do {
-            let image = try await task.value
+            let (image, fetched) = try await task.value
             cache.setObject(CachedThumbnail(image), forKey: key, cost: image.bytesPerRow * image.height)
+            if let fetched {
+                dataCache.setObject(fetched as NSData, forKey: key, cost: fetched.count)
+            }
             return image
         } catch {
             log.debug("thumbnail load failed: \(error.localizedDescription)")
