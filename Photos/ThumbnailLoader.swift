@@ -19,7 +19,9 @@ actor ThumbnailLoader {
 
     init(session: GoogleSession) {
         googleSession = session
-        cache.totalCostLimit = 256 * 1024 * 1024
+        // small on purpose: a miss re-decodes from the bytes tier in milliseconds,
+        // and NSCache treats the limit loosely enough without a large ceiling
+        cache.totalCostLimit = 128 * 1024 * 1024
         dataCache.totalCostLimit = 128 * 1024 * 1024
     }
 
