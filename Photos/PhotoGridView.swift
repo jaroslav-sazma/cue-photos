@@ -11,6 +11,7 @@ struct PhotoGridView: NSViewRepresentable {
     let selectedKeys: Set<String>
     let thumbnails: ThumbnailLoader
     let onToggle: (MediaItem, _ rangeSelect: Bool) -> Void
+    let onSelectSection: ([MediaItem]) -> Void
     let onOpenLightbox: (MediaItem) -> Void
 
     func makeCoordinator() -> Coordinator {
@@ -133,7 +134,10 @@ struct PhotoGridView: NSViewRepresentable {
                 )
                 let header = view as! PhotoSectionHeaderView
                 if let self, indexPath.section < self.appliedSectionIDs.count {
-                    header.title = self.titlesBySection[self.appliedSectionIDs[indexPath.section]] ?? ""
+                    let sectionID = self.appliedSectionIDs[indexPath.section]
+                    header.title = self.titlesBySection[sectionID] ?? ""
+                    // resolved at click time: a header outlives the snapshot that made it
+                    header.onSelectAll = { [weak self] in self?.selectAll(inSection: sectionID) }
                 }
                 return header
             }
@@ -252,6 +256,12 @@ struct PhotoGridView: NSViewRepresentable {
                 guard let item = item(at: indexPath) else { continue }
                 prefetchTasks.removeValue(forKey: item.dedupKey)?.cancel()
             }
+        }
+
+        private func selectAll(inSection sectionID: String) {
+            let items = (appliedItemIDs[sectionID] ?? []).compactMap { itemsByKey[$0] }
+            guard !items.isEmpty else { return }
+            parent.onSelectSection(items)
         }
 
         private func item(at indexPath: IndexPath) -> MediaItem? {
@@ -426,8 +436,10 @@ final class PhotoSectionHeaderView: NSVisualEffectView, NSCollectionViewElement 
     var title: String = "" {
         didSet { label.stringValue = title }
     }
+    var onSelectAll: (() -> Void)?
 
     private let label = NSTextField(labelWithString: "")
+    private let selectButton = NSButton()
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -437,13 +449,34 @@ final class PhotoSectionHeaderView: NSVisualEffectView, NSCollectionViewElement 
         label.font = .systemFont(ofSize: 13, weight: .semibold)
         label.textColor = .secondaryLabelColor
         addSubview(label)
+
+        selectButton.translatesAutoresizingMaskIntoConstraints = false
+        selectButton.title = String(localized: "Select")
+        selectButton.bezelStyle = .glass
+        selectButton.controlSize = .small
+        selectButton.toolTip = String(localized: "Select every photo in this group")
+        selectButton.target = self
+        selectButton.action = #selector(selectGroup)
+        addSubview(selectButton)
+
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             label.centerYAnchor.constraint(equalTo: centerYAnchor),
+            label.trailingAnchor.constraint(lessThanOrEqualTo: selectButton.leadingAnchor, constant: -8),
+            selectButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            selectButton.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
 
     required init?(coder: NSCoder) {
         fatalError("not used")
+    }
+
+    override func prepareForReuse() {
+        onSelectAll = nil
+    }
+
+    @objc private func selectGroup() {
+        onSelectAll?()
     }
 }

@@ -205,6 +205,7 @@ struct BrowserView: View {
                 selectedKeys: Set(model.selection.entries.keys),
                 thumbnails: model.thumbnails,
                 onToggle: handleToggle,
+                onSelectSection: { model.selection.select($0, in: contextAlbum) },
                 onOpenLightbox: { model.openLightbox($0, in: flatItems, album: contextAlbum) }
             )
         }

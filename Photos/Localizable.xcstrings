@@ -1243,6 +1243,16 @@
         }
       }
     },
+    "Select every photo in this group": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat všechny fotky ve skupině"
+          }
+        }
+      }
+    },
     "Selected": {
       "localizations": {
         "cs": {

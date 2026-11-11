@@ -34,8 +34,9 @@ Safari would), and nothing ever leaves the connection between your Mac and Googl
 - **Find unsorted photos**: the "Not in album" filter shows exactly the photos that are in no
   album, the one view Google Photos itself refuses to offer.
 - **Select across everything**: the selection follows you across albums, filters and views, and
-  survives app restarts. It only empties when a bulk action fully succeeds or you clear it
-  (with undo). After a partial failure, exactly the unprocessed photos stay selected.
+  survives app restarts. "Select" next to a day or month heading adds every photo of that group.
+  The selection only empties when a bulk action fully succeeds or you clear it (with undo).
+  After a partial failure, exactly the unprocessed photos stay selected.
 - **Sort into albums**: add the selection to an existing or new album, with chunked progress.
   Inside an album, the selection bar also offers "Remove from album" — it takes out only the
   selected photos that are in that album; the photos stay in your library and other albums.
