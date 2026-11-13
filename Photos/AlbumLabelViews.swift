@@ -106,23 +106,12 @@ struct AlbumLabelsSheet: View {
 
             List {
                 ForEach(store.labels) { label in
-                    HStack(spacing: 10) {
-                        Text(label.emoji)
-                            .font(.title3)
-                            .frame(width: 28)
-                        TextField("Name", text: Binding(
-                            get: { label.name },
-                            set: { store.rename(id: label.id, to: $0) }
-                        ))
-                        .textFieldStyle(.plain)
-                        Button {
-                            store.remove(id: label.id)
-                        } label: {
-                            Label("Delete label", systemImage: "trash")
+                    AlbumLabelRow(label: label) {
+                        // a re-added emoji must not silently switch a stale filter back on
+                        if model.ui.albumLabelFilter == label.id {
+                            model.ui.albumLabelFilter = nil
                         }
-                        .labelStyle(.iconOnly)
-                        .buttonStyle(.borderless)
-                        .help("Delete label")
+                        store.remove(id: label.id)
                     }
                 }
             }
@@ -174,30 +163,34 @@ struct AlbumLabelsSheet: View {
                 Button("Import…") {
                     importerShown = true
                 }
+                // a second file dialog modifier on the same view may never present
                 Button("Export…") {
                     export()
                 }
                 .disabled(store.labels.isEmpty)
+                .fileExporter(
+                    isPresented: Binding(
+                        get: { exportDocument != nil },
+                        set: { if !$0 { exportDocument = nil } }
+                    ),
+                    document: exportDocument,
+                    contentType: .json,
+                    defaultFilename: String(localized: "Cue Photos Labels")
+                ) { result in
+                    if case .failure(let error) = result {
+                        errorText = error.localizedDescription
+                    }
+                }
                 Spacer()
             }
         }
         .padding(20)
         .frame(width: 420)
         .fileImporter(isPresented: $importerShown, allowedContentTypes: [.json]) { result in
-            if case .success(let url) = result {
+            switch result {
+            case .success(let url):
                 importLabels(from: url)
-            }
-        }
-        .fileExporter(
-            isPresented: Binding(
-                get: { exportDocument != nil },
-                set: { if !$0 { exportDocument = nil } }
-            ),
-            document: exportDocument,
-            contentType: .json,
-            defaultFilename: String(localized: "Cue Photos Labels")
-        ) { result in
-            if case .failure(let error) = result {
+            case .failure(let error):
                 errorText = error.localizedDescription
             }
         }
@@ -219,6 +212,7 @@ struct AlbumLabelsSheet: View {
             return
         }
         errorText = nil
+        infoText = nil
         newEmoji = ""
         newName = ""
     }
@@ -241,6 +235,52 @@ struct AlbumLabelsSheet: View {
         } catch {
             errorText = error.localizedDescription
         }
+    }
+}
+
+private struct AlbumLabelRow: View {
+    let label: AlbumLabel
+    let onDelete: () -> Void
+
+    @Environment(AppModel.self) private var model
+    @State private var draft: String
+    @FocusState private var focused: Bool
+
+    init(label: AlbumLabel, onDelete: @escaping () -> Void) {
+        self.label = label
+        self.onDelete = onDelete
+        _draft = State(initialValue: label.name)
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Text(label.emoji)
+                .font(.title3)
+                .frame(width: 28)
+            TextField("Name", text: $draft)
+                .textFieldStyle(.plain)
+                .focused($focused)
+                .onSubmit { commit() }
+                .onChange(of: focused) { _, isFocused in
+                    if !isFocused { commit() }
+                }
+            Button(action: onDelete) {
+                Label("Delete label", systemImage: "trash")
+            }
+            .labelStyle(.iconOnly)
+            .buttonStyle(.borderless)
+            .help("Delete label")
+        }
+        // an import can rename the label while the row is on screen
+        .onChange(of: label.name) { _, name in
+            if !focused { draft = name }
+        }
+    }
+
+    // an empty name would leave the label without a tooltip; it reverts instead
+    private func commit() {
+        model.labels.rename(id: label.id, to: draft)
+        draft = model.labels.label(id: label.id)?.name ?? draft
     }
 }
 

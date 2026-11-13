@@ -23,7 +23,8 @@ to yourself.
 - **Your current selection** (photo identifiers and thumbnail URLs) in the app's sandboxed
   Application Support folder, so it survives restarts.
 - **Your album labels** (emoji and names) in the same folder. They stay on this Mac; Google sees
-  only the emoji you put into an album name. An export goes only to the file you pick.
+  only the emoji you put into an album name. An export goes only to the file you pick. They
+  belong to no Google account, so Sign Out and an account switch keep them.
 - **View preferences** (sort order, columns, grouping) and a salted hash of the signed-in
   account identifier — used only to detect an account switch and reset local state — in the
   app's preferences.

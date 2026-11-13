@@ -8,6 +8,7 @@ struct AddToAlbumSheet: View {
     @State private var labelFilter: String?
     @State private var sortOrder: AlbumSortOrder = .newestFirst
     @State private var selectedAlbumKey: String?
+    @State private var createdAlbumKey: String?
     @State private var newAlbumName = ""
     @State private var errorText: String?
     @State private var workTask: Task<Void, Never>?
@@ -107,12 +108,15 @@ struct AddToAlbumSheet: View {
 
     private var target: AppModel.AddTarget? {
         let name = newAlbumName.trimmingCharacters(in: .whitespaces)
-        if !name.isEmpty {
-            // a bare label is not a name yet; until text follows, no album is created
-            return model.labels.labels.removingLabel(from: name).isEmpty ? nil : .new(name)
+        // a bare label is not a name yet; until text follows, no album is created
+        if !model.labels.labels.removingLabel(from: name).isEmpty {
+            return .new(name)
         }
+        // an album the search or label filter hides must not receive photos; the
+        // album this sheet just created stays the retry target even when hidden
         if let key = selectedAlbumKey,
-           let album = model.albumsStore.albums.first(where: { $0.mediaKey == key }) {
+           let album = model.albumsStore.albums.first(where: { $0.mediaKey == key }),
+           key == createdAlbumKey || filteredAlbums.contains(album) {
             return .existing(album)
         }
         return nil
@@ -134,6 +138,7 @@ struct AddToAlbumSheet: View {
                 // a retry after partial failure must add to the same album, not
                 // create a second one with the same name
                 selectedAlbumKey = created.mediaKey
+                createdAlbumKey = created.mediaKey
                 newAlbumName = ""
             }
             if let failure = outcome.failureText {

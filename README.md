@@ -69,7 +69,8 @@ Safari would), and nothing ever leaves the connection between your Mac and Googl
 - Downloads use the same media endpoints the web app uses. If EXIF/GPS fidelity is critical for
   your archive, verify a few downloaded photos first; videos are transcoded by Google's
   endpoint.
-- One Google account at a time; switching accounts resets the app's local state.
+- One Google account at a time; switching accounts resets the app's local state, except your
+  album labels.
 
 ## Building from source
 

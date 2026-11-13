@@ -12,21 +12,23 @@ nonisolated struct AlbumLabel: Codable, Hashable, Identifiable, Sendable {
 
     var id: String { Self.key(emoji) }
 
-    // U+FE0F only requests emoji presentation and emoji pickers add or omit it
-    // freely: "🏖" and "🏖️" must be the same label
+    // U+FE0F/U+FE0E only request emoji or text presentation and emoji pickers add
+    // or omit them freely: "🏖", "🏖️" and "🏖︎" must be the same label
     static func key(_ text: some StringProtocol) -> String {
         var scalars = String.UnicodeScalarView()
-        scalars.append(contentsOf: text.unicodeScalars.filter { $0 != "\u{FE0F}" })
+        scalars.append(contentsOf: text.unicodeScalars.filter { $0 != "\u{FE0F}" && $0 != "\u{FE0E}" })
         return String(scalars)
     }
 
-    // digits, # and * carry the Unicode emoji property too; bare ASCII is text,
-    // while "🏖" without U+FE0F (text presentation by default) still counts
+    // digits, # and * carry the emoji property but are emoji only as keycaps: with a
+    // bare U+FE0F they would key to the plain character and claim every title
+    // starting with it
     static func isValidEmoji(_ text: String) -> Bool {
         guard text.count == 1, let first = text.unicodeScalars.first else { return false }
-        let scalars = text.unicodeScalars
-        return scalars.contains { $0.properties.isEmojiPresentation }
-            || (first.properties.isEmoji && (!first.isASCII || scalars.count > 1))
+        if first.isASCII {
+            return text.unicodeScalars.contains("\u{20E3}")
+        }
+        return first.properties.isEmoji
     }
 }
 
@@ -134,7 +136,9 @@ final class AlbumLabelStore {
     }
 
     func rename(id: String, to name: String) {
-        guard let index = labels.firstIndex(where: { $0.id == id }) else { return }
+        let name = name.trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty, let index = labels.firstIndex(where: { $0.id == id }),
+              labels[index].name != name else { return }
         labels[index].name = name
         save()
     }
@@ -157,22 +161,24 @@ final class AlbumLabelStore {
         guard let file = try? JSONDecoder().decode(File.self, from: data) else {
             throw ImportError.unreadable
         }
-        var changed = 0
-        for imported in file.labels where AlbumLabel.isValidEmoji(imported.emoji) {
+        var changed = Set<String>()
+        for var imported in file.labels where AlbumLabel.isValidEmoji(imported.emoji) {
+            imported.name = imported.name.trimmingCharacters(in: .whitespaces)
+            guard !imported.name.isEmpty else { continue }
             if let index = labels.firstIndex(where: { $0.id == imported.id }) {
                 guard labels[index].name != imported.name else { continue }
                 labels[index].name = imported.name
             } else {
                 labels.append(imported)
             }
-            changed += 1
+            changed.insert(imported.id)
         }
-        if changed > 0 { save() }
-        return changed
+        if !changed.isEmpty { save() }
+        return changed.count
     }
 
-    // the list is tiny and changes only on explicit edits; a synchronous atomic
-    // write keeps it simple and loses nothing on quit
+    // the list is tiny and names save on submit, not per keystroke; a synchronous
+    // atomic write keeps it simple and loses nothing on quit
     private func save() {
         do {
             try FileManager.default.createDirectory(
