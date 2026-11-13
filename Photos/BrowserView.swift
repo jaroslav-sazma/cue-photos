@@ -361,6 +361,9 @@ struct BrowserView: View {
 
         ToolbarItem {
             Menu {
+                Button("Album Labels…") {
+                    model.labelsShown = true
+                }
                 Button("About Cue: Pick & Place…") {
                     model.aboutShown = true
                 }

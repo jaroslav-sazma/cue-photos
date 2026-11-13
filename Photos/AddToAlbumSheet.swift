@@ -5,6 +5,7 @@ struct AddToAlbumSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var search = ""
+    @State private var labelFilter: String?
     @State private var sortOrder: AlbumSortOrder = .newestFirst
     @State private var selectedAlbumKey: String?
     @State private var newAlbumName = ""
@@ -36,6 +37,10 @@ struct AddToAlbumSheet: View {
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal)
 
+            AlbumLabelFilter(selection: $labelFilter)
+                .padding(.horizontal)
+                .padding(.top, 6)
+
             List(selection: $selectedAlbumKey) {
                 ForEach(filteredAlbums) { album in
                     HStack {
@@ -53,6 +58,7 @@ struct AddToAlbumSheet: View {
             Divider()
 
             HStack {
+                AlbumLabelMenu(title: $newAlbumName)
                 TextField("Or create a new album", text: $newAlbumName)
                     .textFieldStyle(.roundedBorder)
             }
@@ -94,18 +100,16 @@ struct AddToAlbumSheet: View {
     }
 
     private var filteredAlbums: [Album] {
-        var albums = model.albumsStore.albums
-        let query = search.trimmingCharacters(in: .whitespaces)
-        if !query.isEmpty {
-            albums = albums.filter { $0.displayTitle.localizedSearchContains(query) }
-        }
-        return albums.sorted(by: sortOrder)
+        model.albumsStore.albums
+            .filtered(search: search, label: model.labels.label(id: labelFilter))
+            .sorted(by: sortOrder)
     }
 
     private var target: AppModel.AddTarget? {
         let name = newAlbumName.trimmingCharacters(in: .whitespaces)
         if !name.isEmpty {
-            return .new(name)
+            // a bare label is not a name yet; until text follows, no album is created
+            return model.labels.labels.removingLabel(from: name).isEmpty ? nil : .new(name)
         }
         if let key = selectedAlbumKey,
            let album = model.albumsStore.albums.first(where: { $0.mediaKey == key }) {

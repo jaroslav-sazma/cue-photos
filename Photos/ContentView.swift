@@ -113,6 +113,9 @@ private struct ConnectedView: View {
         .sheet(isPresented: $model.aboutShown) {
             AboutView()
         }
+        .sheet(isPresented: $model.labelsShown) {
+            AlbumLabelsSheet()
+        }
         .sheet(item: $model.renameTarget) { album in
             RenameAlbumSheet(album: album)
         }

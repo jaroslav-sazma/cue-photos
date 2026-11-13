@@ -35,6 +35,7 @@ final class BrowseState {
     var dateFrom = Calendar.current.date(byAdding: .month, value: -3, to: .now) ?? .now
     var dateTo = Date.now
     var albumSearch = ""
+    var albumLabelFilter: String?
 
     // whole days, inclusive at both ends, regardless of the clock time the pickers carry
     var dateRange: ClosedRange<Date>? {
@@ -62,5 +63,6 @@ final class BrowseState {
         scope = .all
         dateRangeEnabled = false
         albumSearch = ""
+        albumLabelFilter = nil
     }
 }

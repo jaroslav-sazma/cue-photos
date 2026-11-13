@@ -44,9 +44,12 @@ struct RenameAlbumSheet: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                TextField("Album name", text: $name)
-                    .textFieldStyle(.roundedBorder)
-                    .onSubmit { save() }
+                HStack {
+                    AlbumLabelMenu(title: $name)
+                    TextField("Album name", text: $name)
+                        .textFieldStyle(.roundedBorder)
+                        .onSubmit { save() }
+                }
                 HStack {
                     Spacer()
                     Button("Save") {
@@ -97,7 +100,8 @@ struct RenameAlbumSheet: View {
     }
 
     private var canSave: Bool {
-        !trimmedName.isEmpty && trimmedName != savedName && !isWorking
+        !model.labels.labels.removingLabel(from: trimmedName).isEmpty
+            && trimmedName != savedName && !isWorking
     }
 
     private func parsedEmails() -> [String] {

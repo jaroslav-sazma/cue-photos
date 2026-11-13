@@ -9,6 +9,7 @@ final class AppModel {
     let photos: PhotosService
     let thumbnails: ThumbnailLoader
     let selection: SelectionStore
+    let labels = AlbumLabelStore(fileURL: AlbumLabelStore.defaultFileURL())
     let albumsStore = AlbumsStore()
     let library = LibraryStore()
     let membership = AlbumMembershipIndex()
@@ -90,12 +91,9 @@ final class AppModel {
     }
 
     var sortedFilteredAlbums: [Album] {
-        var albums = albumsStore.albums
-        let query = ui.albumSearch.trimmingCharacters(in: .whitespaces)
-        if !query.isEmpty {
-            albums = albums.filter { $0.displayTitle.localizedSearchContains(query) }
-        }
-        return albums.sorted(by: ui.albumSort)
+        albumsStore.albums
+            .filtered(search: ui.albumSearch, label: labels.label(id: ui.albumLabelFilter))
+            .sorted(by: ui.albumSort)
     }
 
     // Items for the Selection view: prefer the live library item (fresh thumb URL),
@@ -166,6 +164,7 @@ final class AppModel {
     var trashConfirmationShown = false
     var removeFromAlbumConfirmationShown = false
     var aboutShown = false
+    var labelsShown = false
     var renameTarget: Album?
     private(set) var isBulkWorking = false
     private(set) var bulkProgress: (done: Int, total: Int)?

@@ -40,6 +40,12 @@ Safari would), and nothing ever leaves the connection between your Mac and Googl
 - **Sort into albums**: add the selection to an existing or new album, with chunked progress.
   Inside an album, the selection bar also offers "Remove from album" — it takes out only the
   selected photos that are in that album; the photos stay in your library and other albums.
+- **Label albums**: keep your own list of labels — an emoji and a name — under More → "Album
+  Labels…". When you create or rename an album, pick a label from the tag menu next to the name:
+  its emoji becomes the first character of the album name, so Google Photos shows it too. The
+  emoji buttons under the album search filter the album list by label, and the search matches
+  every word you type, so "🏖 Italy" finds every album that has both. "Export…" and "Import…" carry
+  the list to another Mac or over a reinstall; deleting a label leaves album names as they are.
 - **Download** the selection into a folder of your choice, with original file names, a progress
   bar, sleep prevention while running and a quit guard. Photos come as full-quality originals;
   videos come from Google's download endpoint, which serves a transcoded rendition.

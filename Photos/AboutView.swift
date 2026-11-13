@@ -24,7 +24,7 @@ struct AboutView: View {
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("This app is a native interface on top of the official Google Photos website. You sign in to Google yourself, right here in the app, and everything you do — browsing, sorting into albums, downloading — happens inside that session, exactly as if you clicked through photos.google.com by hand.")
-                Text("Your photos and your login never leave the connection between this Mac and Google. The app collects nothing, sends nothing anywhere else and keeps no copies beyond a local thumbnail cache and your current selection.")
+                Text("Your photos and your login never leave the connection between this Mac and Google. The app collects nothing, sends nothing anywhere else and keeps no copies beyond a local thumbnail cache, your current selection and your album labels.")
                 Text("Built on the MIT-licensed Google Photos Toolkit. Released under GPL-3.0-or-later.")
                     .foregroundStyle(.secondary)
                 Text("Not affiliated with, endorsed by, or sponsored by Google. Google Photos is a trademark of Google LLC.")

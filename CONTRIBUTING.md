@@ -44,6 +44,10 @@ documentation lives in `README.md`, the privacy picture in `PRIVACY.md`.
   `mediaKey`s for the same photo), persisted to Application Support with serialized atomic
   writes and a synchronous flush on quit. It empties only through fully successful bulk actions
   (chunk by chunk, as chunks confirm) or an explicit, undoable clear.
+- **Album labels** (`PhotosModel/AlbumLabels.swift`) are local only: an emoji plus a name in
+  `labels.json` next to the selection. Google knows nothing about them — an album "has" a label
+  when its title starts with that emoji (compared without U+FE0F), so a label survives anywhere
+  the title does, and the album list filters on the title alone.
 - **PhotoGridView** (`Photos/PhotoGridView.swift`) wraps `NSCollectionView`: diffable
   snapshots, recycled layer-backed cells, pinned section headers, native prefetch wired to the
   `ThumbnailLoader` actor (authenticated fetches through `GoogleSession`, ImageIO downsampling

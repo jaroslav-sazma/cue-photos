@@ -87,6 +87,8 @@ struct SidebarView: View {
                         .strokeBorder(.quaternary)
                 )
 
+                AlbumLabelFilter(selection: $ui.albumLabelFilter)
+
                 ForEach(model.sortedFilteredAlbums) { album in
                     Button {
                         model.ui.destination = .album(album)

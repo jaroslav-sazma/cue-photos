@@ -73,12 +73,32 @@
         }
       }
     },
+    "A label is an emoji at the start of an album name. Pick it when you create or rename an album, then filter your albums by it.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Štítek je emoji na začátku názvu alba. Vyberte ho při vytváření nebo přejmenování alba a pak podle něj alba filtrujte."
+          }
+        }
+      }
+    },
     "About Cue: Pick & Place…": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "O aplikaci Cue: Pick & Place…"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat"
           }
         }
       }
@@ -191,12 +211,42 @@
         }
       }
     },
+    "Album Labels": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Štítky alb"
+          }
+        }
+      }
+    },
+    "Album Labels…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Štítky alb…"
+          }
+        }
+      }
+    },
     "Album index failed": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "Index alb selhal"
+          }
+        }
+      }
+    },
+    "Album label": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Štítek alba"
           }
         }
       }
@@ -333,6 +383,16 @@
         }
       }
     },
+    "Choose emoji": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat emoji"
+          }
+        }
+      }
+    },
     "Close": {
       "localizations": {
         "cs": {
@@ -403,12 +463,42 @@
         }
       }
     },
+    "Cue Photos Labels": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Štítky Cue Photos"
+          }
+        }
+      }
+    },
     "Day": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "Den"
+          }
+        }
+      }
+    },
+    "Delete label": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat štítek"
+          }
+        }
+      }
+    },
+    "Deleting a label leaves album names as they are.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazání štítku názvy alb nemění."
           }
         }
       }
@@ -517,12 +607,62 @@
         }
       }
     },
+    "Edit Labels…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upravit štítky…"
+          }
+        }
+      }
+    },
     "Email addresses, separated by commas": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "E-mailové adresy oddělené čárkami"
+          }
+        }
+      }
+    },
+    "Emoji": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emoji"
+          }
+        }
+      }
+    },
+    "Enter a name for the label.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte název štítku."
+          }
+        }
+      }
+    },
+    "Enter a single emoji.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte jedno emoji."
+          }
+        }
+      }
+    },
+    "Export…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportovat…"
           }
         }
       }
@@ -607,6 +747,68 @@
         }
       }
     },
+    "Imported %lld labels": {
+      "localizations": {
+        "cs": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Importovány %lld štítky"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Importováno %lld štítku"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Importován %lld štítek"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Importováno %lld štítků"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Imported %lld label"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Imported %lld labels"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Import…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importovat…"
+          }
+        }
+      }
+    },
     "Indexing albums %lld/%lld…": {
       "localizations": {
         "cs": {
@@ -623,6 +825,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nechat doběhnout"
+          }
+        }
+      }
+    },
+    "Label": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Štítek"
           }
         }
       }
@@ -785,12 +997,52 @@
         }
       }
     },
+    "Name": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název"
+          }
+        }
+      }
+    },
+    "Name, e.g. Vacation": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název, např. Dovolená"
+          }
+        }
+      }
+    },
     "Newest first": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "Od nejnovějších"
+          }
+        }
+      }
+    },
+    "No label": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez štítku"
+          }
+        }
+      }
+    },
+    "No labels yet": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné štítky"
           }
         }
       }
@@ -1353,6 +1605,16 @@
         }
       }
     },
+    "The file doesn’t contain album labels.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soubor neobsahuje štítky alb."
+          }
+        }
+      }
+    },
     "The folder is not writable — %lld files saved, the rest stayed selected": {
       "localizations": {
         "cs": {
@@ -1389,6 +1651,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tohle nevypadá jako e-mailová adresa: %@"
+          }
+        }
+      }
+    },
+    "This emoji already has a label.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto emoji už štítek má."
           }
         }
       }
@@ -1463,12 +1735,12 @@
         }
       }
     },
-    "Your photos and your login never leave the connection between this Mac and Google. The app collects nothing, sends nothing anywhere else and keeps no copies beyond a local thumbnail cache and your current selection.": {
+    "Your photos and your login never leave the connection between this Mac and Google. The app collects nothing, sends nothing anywhere else and keeps no copies beyond a local thumbnail cache, your current selection and your album labels.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vaše fotky ani přihlášení nikdy neopustí spojení mezi tímto Macem a Googlem. Aplikace nic nesbírá, nikam jinam nic neposílá a kromě lokální mezipaměti náhledů a aktuálního výběru si nic neukládá."
+            "value": "Vaše fotky ani přihlášení nikdy neopustí spojení mezi tímto Macem a Googlem. Aplikace nic nesbírá, nikam jinam nic neposílá a kromě lokální mezipaměti náhledů, aktuálního výběru a vašich štítků alb si nic neukládá."
           }
         }
       }
