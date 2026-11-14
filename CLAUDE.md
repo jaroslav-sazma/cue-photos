@@ -14,7 +14,8 @@ after every change that touches what they describe.
 
 ## Naming
 - The `.app` file name never contains a colon, which Finder cannot show: the product is
-  `Cue Photos.app`; "Cue: Pick & Place" lives only in `CFBundleDisplayName`.
+  `Cue Photos.app`; the full name "Cue: Pick & Place (for Google Photos)" lives only in
+  `CFBundleDisplayName` (Debug builds: "Cue: Pick & Place debug").
 - Prose names the product in full ("Cue: Pick & Place") or by the short form "Cue Photos"; a bare
   "Cue:" stays only where it quotes what a screen shows.
 - The Swift module is `CuePhotos` (never `Photos` — that collides with Apple's Photos framework);

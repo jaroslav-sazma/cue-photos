@@ -286,7 +286,7 @@
 				CURRENT_PROJECT_VERSION = 4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Cue: Pick & Place";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cue: Pick & Place (for Google Photos)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Jaroslav Sazma. GPL-3.0-or-later.";
 				LD_RUNPATH_SEARCH_PATHS = (
