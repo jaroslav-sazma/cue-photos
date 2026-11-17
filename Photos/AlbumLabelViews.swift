@@ -49,23 +49,75 @@ struct AlbumLabelFilter: View {
 
     var body: some View {
         let labels = model.labels.labels
+        // no horizontal ScrollView: a mouse wheel never scrolls it, so labels past the panel
+        // width were unreachable, and nested in the sidebar List it went with lost row hover
         if !labels.isEmpty {
-            ScrollView(.horizontal) {
-                HStack(spacing: 4) {
-                    ForEach(labels) { label in
-                        Toggle(isOn: Binding(
-                            get: { selection == label.id },
-                            set: { selection = $0 ? label.id : nil }
-                        )) {
-                            Text(label.emoji)
-                        }
-                        .toggleStyle(.button)
-                        .help(label.name)
+            WrappingLayout(spacing: 4) {
+                ForEach(labels) { label in
+                    Toggle(isOn: Binding(
+                        get: { selection == label.id },
+                        set: { selection = $0 ? label.id : nil }
+                    )) {
+                        Text(label.emoji)
                     }
+                    .toggleStyle(.button)
+                    .help(label.name)
                 }
             }
-            .scrollIndicators(.never)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+}
+
+private struct WrappingLayout: Layout {
+    var spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = arrange(subviews, width: proposal.width ?? .infinity)
+        let width = rows.map(\.width).max() ?? 0
+        let height = rows.map(\.height).reduce(0, +) + spacing * CGFloat(max(rows.count - 1, 0))
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for row in arrange(subviews, width: bounds.width) {
+            var x = bounds.minX
+            for index in row.indices {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(
+                    at: CGPoint(x: x, y: y + (row.height - size.height) / 2),
+                    proposal: ProposedViewSize(size)
+                )
+                x += size.width + spacing
+            }
+            y += row.height + spacing
+        }
+    }
+
+    private struct Row {
+        var indices: [Int] = []
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+    }
+
+    private func arrange(_ subviews: Subviews, width: CGFloat) -> [Row] {
+        var rows: [Row] = []
+        var row = Row()
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+            if !row.indices.isEmpty, row.width + spacing + size.width > width {
+                rows.append(row)
+                row = Row()
+            }
+            row.width += (row.indices.isEmpty ? 0 : spacing) + size.width
+            row.height = max(row.height, size.height)
+            row.indices.append(index)
+        }
+        if !row.indices.isEmpty {
+            rows.append(row)
+        }
+        return rows
     }
 }
 
