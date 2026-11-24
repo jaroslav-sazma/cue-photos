@@ -11,24 +11,60 @@ nonisolated struct Album: Codable, Identifiable, Hashable, Sendable {
     var isShared: Bool?
     var authKey: String?
     var creationTimestamp: Double?
+    var timestampRange: PhotoDateRange?
 
     var id: String { mediaKey }
     var displayTitle: String {
         title?.isEmpty == false ? title! : String(localized: "Untitled album")
     }
+    var newestPhotoTimestamp: Double? { timestampRange?.newest }
+}
+
+// Decodes leniently: a reshaped range must cost the album its date, not drop it from
+// the list. The newer end wins, so the pair's order does not matter.
+nonisolated struct PhotoDateRange: Codable, Hashable, Sendable {
+    var newest: Double?
+
+    init(newest: Double?) {
+        self.newest = newest
+    }
+
+    init(from decoder: Decoder) {
+        let ends = try? decoder.singleValueContainer().decode([Lenient<Double>].self)
+        newest = ends?.compactMap(\.value).max()
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode([newest])
+    }
 }
 
 nonisolated enum AlbumSortOrder: String, CaseIterable, Sendable {
-    case newestFirst
+    case newestPhotoFirst
+    // the raw value predates the rename; stored preferences still carry it
+    case recentlyCreated = "newestFirst"
     case titleAscending
 }
 
 nonisolated extension [Album] {
     // Google's list order is not reliably creation-sorted (a fresh album can arrive
-    // appended), so newest-first sorts locally by creation time
+    // appended), so every order sorts locally. The album list carries each album's
+    // newest photo date, so sorting by it costs no extra RPC; albums without one
+    // (empty ones) go last.
     func sorted(by order: AlbumSortOrder) -> [Album] {
         switch order {
-        case .newestFirst:
+        case .newestPhotoFirst:
+            sorted {
+                let a = $0.newestPhotoTimestamp ?? -.infinity
+                let b = $1.newestPhotoTimestamp ?? -.infinity
+                if a != b { return a > b }
+                let createdA = $0.creationTimestamp ?? 0
+                let createdB = $1.creationTimestamp ?? 0
+                // one photo often sits in several albums; ties must not reshuffle per refresh
+                return createdA != createdB ? createdA > createdB : $0.mediaKey < $1.mediaKey
+            }
+        case .recentlyCreated:
             sorted { ($0.creationTimestamp ?? 0) > ($1.creationTimestamp ?? 0) }
         case .titleAscending:
             sorted { $0.displayTitle.localizedStandardCompare($1.displayTitle) == .orderedAscending }

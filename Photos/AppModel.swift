@@ -92,9 +92,8 @@ final class AppModel {
     }
 
     var sortedFilteredAlbums: [Album] {
-        albumsStore.albums
+        albumsStore.sorted(by: ui.albumSort)
             .filtered(search: ui.albumSearch, label: labels.label(id: ui.albumLabelFilter))
-            .sorted(by: ui.albumSort)
     }
 
     func selectionItems() -> [MediaItem] {

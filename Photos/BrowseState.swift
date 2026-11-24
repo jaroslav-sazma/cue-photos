@@ -59,7 +59,7 @@ final class BrowseState {
         let storedColumns = defaults.integer(forKey: "browse.columns")
         columns = (2...12).contains(storedColumns) ? storedColumns : 6
         scope = PhotoFilterScope(rawValue: defaults.string(forKey: "browse.scope") ?? "") ?? .all
-        albumSort = AlbumSortOrder(rawValue: defaults.string(forKey: "browse.albumSort") ?? "") ?? .newestFirst
+        albumSort = AlbumSortOrder(rawValue: defaults.string(forKey: "browse.albumSort") ?? "") ?? .newestPhotoFirst
         mapStyle = PhotoMapStyle(rawValue: defaults.string(forKey: "browse.mapStyle") ?? "") ?? .standard
     }
 

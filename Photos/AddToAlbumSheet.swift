@@ -6,7 +6,7 @@ struct AddToAlbumSheet: View {
 
     @State private var search = ""
     @State private var labelFilter: String?
-    @State private var sortOrder: AlbumSortOrder = .newestFirst
+    @State private var sortOrder: AlbumSortOrder = .newestPhotoFirst
     @State private var selectedAlbumKey: String?
     @State private var createdAlbumKey: String?
     @State private var newAlbumName = ""
@@ -21,7 +21,8 @@ struct AddToAlbumSheet: View {
                 Spacer()
                 Menu {
                     Picker("Sort albums", selection: $sortOrder) {
-                        Text("Newest first").tag(AlbumSortOrder.newestFirst)
+                        Text("Most recent photo").tag(AlbumSortOrder.newestPhotoFirst)
+                        Text("Recently created").tag(AlbumSortOrder.recentlyCreated)
                         Text("Title (A–Z)").tag(AlbumSortOrder.titleAscending)
                     }
                     .pickerStyle(.inline)
@@ -101,9 +102,8 @@ struct AddToAlbumSheet: View {
     }
 
     private var filteredAlbums: [Album] {
-        model.albumsStore.albums
+        model.albumsStore.sorted(by: sortOrder)
             .filtered(search: search, label: model.labels.label(id: labelFilter))
-            .sorted(by: sortOrder)
     }
 
     private var target: AppModel.AddTarget? {

@@ -107,7 +107,8 @@ struct SidebarView: View {
                     Spacer()
                     Menu {
                         Picker("Sort albums", selection: $ui.albumSort) {
-                            Text("Newest first").tag(AlbumSortOrder.newestFirst)
+                            Text("Most recent photo").tag(AlbumSortOrder.newestPhotoFirst)
+                            Text("Recently created").tag(AlbumSortOrder.recentlyCreated)
                             Text("Title (A–Z)").tag(AlbumSortOrder.titleAscending)
                         }
                         .pickerStyle(.inline)

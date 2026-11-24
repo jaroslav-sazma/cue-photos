@@ -42,6 +42,9 @@ map's imagery, which comes from Apple while the map is open.
 - **Sort into albums**: add the selection to an existing or new album, with chunked progress.
   Inside an album, the selection bar also offers "Remove from album" — it takes out only the
   selected photos that are in that album; the photos stay in your library and other albums.
+  Albums are sorted by "Most recent photo" by default: the album holding the newest photo comes
+  first and empty albums come last. The sort menu also offers "Recently created" and "Title
+  (A–Z)".
 - **Label albums**: keep your own list of labels — an emoji and a name — under More → "Album
   Labels…". When you create or rename an album, pick a label from the tag menu next to the name:
   its emoji becomes the first character of the album name, so Google Photos shows it too. The

@@ -43,7 +43,10 @@ documentation lives in `README.md`, the privacy picture in `PRIVACY.md`.
   back that way is still published once the interval passes, so a slow next RPC never hides it. The
   membership index keeps per-album key sets, so confirmed writes (add, trash, remove from album)
   update it in place; the full network rebuild runs only at bootstrap, on a library/selection
-  refresh and after a restore from trash, whose album destinations Google does not report.
+  refresh and after a restore from trash, whose album destinations Google does not report. The
+  album list sorts locally: Google's list carries each album's photo date range
+  (`timestampRange`), so "Most recent photo" costs no extra RPC, and `AlbumsStore` caches each
+  sorted order until the next revision, so a sidebar redraw only filters.
 - **SelectionStore** (`PhotosModel/SelectionStore.swift`) is the core contract: the cross-album
   selection, keyed by `dedupKey` (stable across albums; album pages return album-scoped
   `mediaKey`s for the same photo), persisted to Application Support with serialized atomic

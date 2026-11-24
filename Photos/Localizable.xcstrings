@@ -939,6 +939,16 @@
         }
       }
     },
+    "Most recent photo": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podle nejnovější fotky"
+          }
+        }
+      }
+    },
     "Move %lld photos to the trash?": {
       "localizations": {
         "cs": {
@@ -1243,6 +1253,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ukončení ji přeruší. Nezpracované fotky zůstanou vybrané."
+          }
+        }
+      }
+    },
+    "Recently created": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podle data vytvoření"
           }
         }
       }

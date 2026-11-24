@@ -17,6 +17,18 @@ final class AlbumsStore {
     private(set) var albums: [Album] = []
     private(set) var revision = 0
     private var generation = 0
+    // Views re-read the sorted list on every redraw, and a title sort compares
+    // localized strings; the list only changes with a new revision. Kept per order,
+    // because the sidebar and the add-to-album sheet can sort differently at once.
+    @ObservationIgnored private var sortCache: (revision: Int, lists: [AlbumSortOrder: [Album]]) = (0, [:])
+
+    func sorted(by order: AlbumSortOrder) -> [Album] {
+        if sortCache.revision != revision { sortCache = (revision, [:]) }
+        if let cached = sortCache.lists[order] { return cached }
+        let sorted = albums.sorted(by: order)
+        sortCache.lists[order] = sorted
+        return sorted
+    }
 
     func refresh(using service: PhotosService) async {
         generation += 1
