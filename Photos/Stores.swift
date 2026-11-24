@@ -44,7 +44,19 @@ final class AlbumsStore {
     }
 }
 
-// Holds the whole timeline in memory (~300–500 B/item, 50k ≈ 20 MB): sorting, grouping
+// A held-back page must not stay hidden while the next RPC sits in retry backoff;
+// every page and final publish cancels the pending one first. It reads the list when
+// it fires instead of capturing it: a captured copy would force every following page
+// to copy the whole list.
+private func publishLater(after delay: Duration, _ publish: @escaping () -> Void) -> Task<Void, Never> {
+    Task {
+        try? await Task.sleep(for: delay)
+        guard !Task.isCancelled else { return }
+        publish()
+    }
+}
+
+// Holds the whole timeline in memory (~500 B/item, 300k ≈ 150 MB): sorting, grouping
 // and filtering then happen locally and instantly. The first load publishes page by
 // page; a refresh keeps the old items until the new load completes.
 @Observable
@@ -59,13 +71,24 @@ final class LibraryStore {
     private(set) var phase: Phase = .idle
     private(set) var items: [MediaItem] = []
     private(set) var revision = 0
+    // bumps on every change other than growth at the end: an unchanged epoch lets
+    // the grid extend itself by the new tail instead of rebuilding
+    private(set) var epoch = 0
     private var generation = 0
     private var loadTask: Task<Void, Never>?
+    // the list a load is assembling; only the load of the current generation touches it
+    private var loaded: [MediaItem] = []
+    // keys trashed mid-load must not come back when later pages land
+    private var removedKeys = Set<String>()
+    private var throttle = PublishThrottle()
+    private var trailingPublish: Task<Void, Never>?
 
     func refresh(using service: PhotosService) {
         generation += 1
         let current = generation
         loadTask?.cancel()
+        trailingPublish?.cancel()
+        removedKeys = []
         phase = .loading(loadedCount: 0)
         loadTask = Task { await load(using: service, generation: current) }
     }
@@ -73,21 +96,31 @@ final class LibraryStore {
     func reset() {
         generation += 1
         loadTask?.cancel()
+        trailingPublish?.cancel()
         items = []
+        loaded = []
+        removedKeys = []
         revision += 1
+        epoch += 1
         phase = .idle
     }
 
-    // local prune after a successful trash action; Google already removed them
+    // local prune after a successful trash action; Google already removed them.
+    // Pruning the list in progress too keeps a pending publish valid.
     func removeItems(dedupKeys: Set<String>) {
         guard !dedupKeys.isEmpty else { return }
         items.removeAll { dedupKeys.contains($0.dedupKey) }
+        loaded.removeAll { dedupKeys.contains($0.dedupKey) }
+        removedKeys.formUnion(dedupKeys)
         revision += 1
+        epoch += 1
     }
 
     private func load(using service: PhotosService, generation current: Int) async {
         let progressive = items.isEmpty
-        var loaded: [MediaItem] = []
+        loaded = []
+        throttle = PublishThrottle()
+        defer { if current == generation { loaded = [] } }
         do {
             var pageId: String?
             var fromTimestamp: Double?
@@ -96,10 +129,20 @@ final class LibraryStore {
             repeat {
                 let page = try await service.libraryPage(fromTimestamp: fromTimestamp, pageId: pageId)
                 guard current == generation, !Task.isCancelled else { return }
-                loaded.append(contentsOf: page.items)
+                trailingPublish?.cancel()
+                loaded.append(contentsOf: removedKeys.isEmpty
+                    ? page.items
+                    : page.items.filter { !removedKeys.contains($0.dedupKey) })
                 if progressive {
-                    items = loaded
-                    revision += 1
+                    let delay = throttle.delay()
+                    if delay == .zero {
+                        publishLoaded()
+                    } else {
+                        trailingPublish = publishLater(after: delay) { [weak self] in
+                            guard let self, current == self.generation else { return }
+                            self.publishLoaded()
+                        }
+                    }
                 }
                 phase = .loading(loadedCount: loaded.count)
                 pageId = tokens.next(page.nextPageId)
@@ -108,14 +151,25 @@ final class LibraryStore {
                 fromTimestamp = page.lastItemTimestamp.map { $0 - 1 }
             } while pageId != nil && pages < 10_000
             guard current == generation else { return }
-            items = loaded
-            revision += 1
+            trailingPublish?.cancel()
+            publishLoaded()
+            // a background refresh swaps the whole list; a progressive load only grew it
+            if !progressive { epoch += 1 }
             phase = .ready
         } catch is CancellationError {
         } catch {
             guard current == generation else { return }
+            trailingPublish?.cancel()
+            // pages held back by the throttle were loaded fine; keep them on screen
+            if progressive { publishLoaded() }
             phase = .failed(error.localizedDescription)
         }
+    }
+
+    private func publishLoaded() {
+        items = loaded
+        revision += 1
+        throttle.didPublish()
     }
 }
 
@@ -319,18 +373,26 @@ final class AlbumContentsStore {
     private(set) var serverAlbumKey: String?
     private(set) var items: [MediaItem] = []
     private(set) var revision = 0
+    // bumps on every change other than growth at the end (see LibraryStore.epoch)
+    private(set) var epoch = 0
     private var generation = 0
     private var loadTask: Task<Void, Never>?
+    // the list a load is assembling; only the load of the current generation touches it
+    private var loaded: [MediaItem] = []
+    private var throttle = PublishThrottle()
+    private var trailingPublish: Task<Void, Never>?
 
     func refresh(album: Album, using service: PhotosService) {
         generation += 1
         let current = generation
         loadTask?.cancel()
+        trailingPublish?.cancel()
         albumKey = album.mediaKey
         serverAlbumKey = nil
         items = []
         removedKeys = []
         revision += 1
+        epoch += 1
         phase = .loading(loadedCount: 0)
         loadTask = Task { await load(album: album, using: service, generation: current) }
     }
@@ -338,11 +400,14 @@ final class AlbumContentsStore {
     func reset() {
         generation += 1
         loadTask?.cancel()
+        trailingPublish?.cancel()
         albumKey = nil
         serverAlbumKey = nil
         items = []
+        loaded = []
         removedKeys = []
         revision += 1
+        epoch += 1
         phase = .idle
     }
 
@@ -350,16 +415,21 @@ final class AlbumContentsStore {
     private var removedKeys = Set<String>()
 
     // local prune after a successful trash or remove-from-album action; Google
-    // already removed them
+    // already removed them. Pruning the list in progress too keeps a pending
+    // publish valid.
     func removeItems(dedupKeys: Set<String>) {
         guard !dedupKeys.isEmpty else { return }
         items.removeAll { dedupKeys.contains($0.dedupKey) }
+        loaded.removeAll { dedupKeys.contains($0.dedupKey) }
         removedKeys.formUnion(dedupKeys)
         revision += 1
+        epoch += 1
     }
 
     private func load(album: Album, using service: PhotosService, generation current: Int) async {
-        var loaded: [MediaItem] = []
+        loaded = []
+        throttle = PublishThrottle()
+        defer { if current == generation { loaded = [] } }
         var seen = Set<String>()
         do {
             var pageId: String?
@@ -368,30 +438,43 @@ final class AlbumContentsStore {
             repeat {
                 let page = try await service.albumItemsPage(album, pageId: pageId)
                 guard current == generation, !Task.isCancelled else { return }
+                trailingPublish?.cancel()
                 if serverAlbumKey == nil { serverAlbumKey = page.mediaKey }
                 // pages can overlap; the grid hides duplicates when sectioning,
                 // but bulk actions must not process a photo twice
-                loaded.append(contentsOf: page.items.filter { seen.insert($0.dedupKey).inserted })
-                if !removedKeys.isEmpty {
-                    loaded.removeAll { removedKeys.contains($0.dedupKey) }
+                loaded.append(contentsOf: page.items.filter {
+                    seen.insert($0.dedupKey).inserted && !removedKeys.contains($0.dedupKey)
+                })
+                let delay = throttle.delay()
+                if delay == .zero {
+                    publishLoaded()
+                } else {
+                    trailingPublish = publishLater(after: delay) { [weak self] in
+                        guard let self, current == self.generation else { return }
+                        self.publishLoaded()
+                    }
                 }
-                items = loaded
-                revision += 1
                 phase = .loading(loadedCount: loaded.count)
                 pageId = tokens.next(page.nextPageId)
                 pages += 1
             } while pageId != nil && pages < 10_000
             guard current == generation else { return }
-            if !removedKeys.isEmpty {
-                loaded.removeAll { removedKeys.contains($0.dedupKey) }
-            }
-            items = loaded
-            revision += 1
+            trailingPublish?.cancel()
+            publishLoaded()
             phase = .ready
         } catch is CancellationError {
         } catch {
             guard current == generation else { return }
+            trailingPublish?.cancel()
+            // pages held back by the throttle were loaded fine; keep them on screen
+            publishLoaded()
             phase = .failed(error.localizedDescription)
         }
+    }
+
+    private func publishLoaded() {
+        items = loaded
+        revision += 1
+        throttle.didPublish()
     }
 }

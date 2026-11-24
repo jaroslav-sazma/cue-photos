@@ -62,6 +62,29 @@ nonisolated struct PageTokenGuard {
     }
 }
 
+// Every publish of a progressive load copies the growing list on the main actor and
+// updates the grid, so pages stream in at most once per interval; the first page
+// always shows at once, and a held-back page waits only for the rest of the interval
+nonisolated struct PublishThrottle {
+    let interval: Duration
+    private var lastPublish: ContinuousClock.Instant?
+
+    init(interval: Duration = .seconds(1)) {
+        self.interval = interval
+    }
+
+    // zero means publish now
+    func delay(at now: ContinuousClock.Instant = .now) -> Duration {
+        guard let lastPublish else { return .zero }
+        let remaining = interval - (now - lastPublish)
+        return remaining > .zero ? remaining : .zero
+    }
+
+    mutating func didPublish(at now: ContinuousClock.Instant = .now) {
+        lastPublish = now
+    }
+}
+
 nonisolated struct MediaItem: Codable, Identifiable, Hashable, Sendable {
     var mediaKey: String
     // dedupKey is the stable identity across sources: album pages return

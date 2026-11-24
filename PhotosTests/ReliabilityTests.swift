@@ -95,22 +95,27 @@ struct SelectionPersistenceTests {
 }
 
 struct SectionStabilityTests {
-    @Test func equalTimestampsKeepStableOrder() {
-        let items = [makeTestItem(2, timestamp: 5000), makeTestItem(1, timestamp: 5000), makeTestItem(3, timestamp: 5000)]
+    private func grid(_ items: [MediaItem], grouping: PhotoGrouping) -> PhotoGrid {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(secondsFromGMT: 0)!
-        let a = PhotoSectioner.sections(from: items, sort: .newestFirst, grouping: .day, calendar: calendar)
-        let b = PhotoSectioner.sections(from: items.reversed(), sort: .newestFirst, grouping: .day, calendar: calendar)
-        #expect(a[0].items.map(\.dedupKey) == b[0].items.map(\.dedupKey))
+        return PhotoGridBuilder(
+            source: items,
+            options: PhotoGridOptions(sort: .newestFirst, grouping: grouping, calendar: calendar)
+        ).grid
+    }
+
+    @Test func equalTimestampsKeepStableOrder() {
+        let items = [makeTestItem(2, timestamp: 5000), makeTestItem(1, timestamp: 5000), makeTestItem(3, timestamp: 5000)]
+        let a = grid(items, grouping: .day)
+        let b = grid(items.reversed(), grouping: .day)
+        #expect(a.map(\.dedupKey) == b.map(\.dedupKey))
     }
 
     @Test func dayAndMonthSectionIdsNeverCollide() {
         let items = [makeTestItem(1, timestamp: 1_790_856_000_000)]
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
-        let day = PhotoSectioner.sections(from: items, sort: .newestFirst, grouping: .day, calendar: calendar)
-        let month = PhotoSectioner.sections(from: items, sort: .newestFirst, grouping: .month, calendar: calendar)
-        #expect(day[0].id != month[0].id)
+        let day = grid(items, grouping: .day)
+        let month = grid(items, grouping: .month)
+        #expect(day.sections[0].id != month.sections[0].id)
     }
 }
 
@@ -152,5 +157,25 @@ struct PageTokenGuardTests {
         #expect(tokens.next("B") == "B")
         #expect(tokens.next(nil) == nil)
         #expect(tokens.next("") == nil)
+    }
+}
+
+struct PublishThrottleTests {
+    @Test func firstPublishIsImmediateThenWaitsOnlyForTheRestOfTheInterval() {
+        var throttle = PublishThrottle(interval: .seconds(1))
+        let start = ContinuousClock.now
+        #expect(throttle.delay(at: start) == .zero)
+        throttle.didPublish(at: start)
+        #expect(throttle.delay(at: start + .milliseconds(400)) == .milliseconds(600))
+        #expect(throttle.delay(at: start + .seconds(1)) == .zero)
+        #expect(throttle.delay(at: start + .seconds(5)) == .zero)
+    }
+
+    @Test func aDelayedPublishRestartsTheInterval() {
+        var throttle = PublishThrottle(interval: .seconds(1))
+        let start = ContinuousClock.now
+        throttle.didPublish(at: start)
+        throttle.didPublish(at: start + .milliseconds(1200))
+        #expect(throttle.delay(at: start + .milliseconds(1300)) == .milliseconds(900))
     }
 }

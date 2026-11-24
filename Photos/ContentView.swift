@@ -92,7 +92,7 @@ private struct ConnectedView: View {
             Text("Google Photos keeps trashed items for 60 days.")
         }
         .confirmationDialog(
-            "Remove \(model.removableFromCurrentAlbum.count) photos from this album?",
+            "Remove \(model.pendingRemovalCount) photos from this album?",
             isPresented: $model.removeFromAlbumConfirmationShown
         ) {
             Button("Remove from Album", role: .destructive) {

@@ -166,6 +166,20 @@ final class SelectionStore {
     }
 }
 
+nonisolated extension SelectionStore {
+    // Items for the Selection view: prefer the live library item (fresh thumb URL),
+    // fall back to what the persisted entry remembers
+    static func items(for entries: [Entry], preferring library: [MediaItem]) -> [MediaItem] {
+        let wanted = Set(entries.map(\.dedupKey))
+        var live: [String: MediaItem] = [:]
+        live.reserveCapacity(wanted.count)
+        for item in library where wanted.contains(item.dedupKey) && live[item.dedupKey] == nil {
+            live[item.dedupKey] = item
+        }
+        return entries.map { live[$0.dedupKey] ?? MediaItem(from: $0) }
+    }
+}
+
 extension MediaItem {
     // Rebuilds a grid-usable item from a persisted selection entry (Selection view
     // fallback when the live library item is not loaded)

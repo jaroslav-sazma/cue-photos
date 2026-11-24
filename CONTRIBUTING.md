@@ -34,11 +34,16 @@ documentation lives in `README.md`, the privacy picture in `PRIVACY.md`.
   traffic flows through a 3-slot `RPCLimiter`. Bulk writes go in 250-item chunks and report the
   exact dedupKeys that succeeded and failed — never bare counts.
 - **Stores** (`Photos/Stores.swift`) hold the library timeline, album contents, trash and the
-  album-membership index (the "Not in album" filter) in memory, generation-guarded against
-  stale tasks, with `revision` counters driving UI updates. The membership index keeps
-  per-album key sets, so confirmed writes (add, trash, remove from album) update it in place;
-  the full network rebuild runs only at bootstrap, on a library/selection refresh and after a
-  restore from trash, whose album destinations Google does not report.
+  album-membership index (the "Not in album" filter) in memory (about 500 B per photo, so 300k
+  photos take ~150 MB), generation-guarded against stale tasks, with `revision` counters driving UI
+  updates. Library and album stores also keep an `epoch` that bumps on every change other than
+  growth at the end; an unchanged epoch is what lets the grid extend instead of rebuilding.
+  Progressive loads show the first page at once and then publish at most once a second
+  (`PublishThrottle`), because every publish copies the growing list on the main actor; a page held
+  back that way is still published once the interval passes, so a slow next RPC never hides it. The
+  membership index keeps per-album key sets, so confirmed writes (add, trash, remove from album)
+  update it in place; the full network rebuild runs only at bootstrap, on a library/selection
+  refresh and after a restore from trash, whose album destinations Google does not report.
 - **SelectionStore** (`PhotosModel/SelectionStore.swift`) is the core contract: the cross-album
   selection, keyed by `dedupKey` (stable across albums; album pages return album-scoped
   `mediaKey`s for the same photo), persisted to Application Support with serialized atomic
@@ -48,10 +53,23 @@ documentation lives in `README.md`, the privacy picture in `PRIVACY.md`.
   `labels.json` next to the selection. Google knows nothing about them — an album "has" a label
   when its title starts with that emoji (compared without U+FE0F), so a label survives anywhere
   the title does, and the album list filters on the title alone.
-- **PhotoGridView** (`Photos/PhotoGridView.swift`) wraps `NSCollectionView`: diffable
-  snapshots, recycled layer-backed cells, pinned section headers, native prefetch wired to the
-  `ThumbnailLoader` actor (authenticated fetches through `GoogleSession`, ImageIO downsampling
-  off the main thread, cost-limited `NSCache`).
+- **PhotoGrid** (`PhotosModel/PhotoGrid.swift`) is what a grid shows: positions into the source list
+  in display order, cut into day or month sections, sharing the source array instead of copying
+  items. `PhotoGridBuilder` builds it off the main actor (about 30 ms for 300k photos) and extends
+  it by a streamed page without re-sorting what is already shown when the page sorts after
+  everything shown — the newest-first timeline always does. Anything else (oldest first, an
+  out-of-order page) falls back to a full build; a test checks that both paths give the same grid.
+- **PhotoGridView** (`Photos/PhotoGridView.swift`) wraps `NSCollectionView` with a classic data
+  source over the `PhotoGrid` and its own `PhotoGridLayout`: square cells and pinned section
+  headers, with the frame math in `PhotosModel/PhotoGridGeometry.swift` (prefix sums over the
+  section counts, so a rect query is a binary search; unit-tested). Diffable snapshots and the
+  compositional layout were dropped after measuring 9 s per snapshot and ~0.2 s per layout pass at
+  270k photos; the replacement stays in single milliseconds. A grown grid (same `buildID`) is
+  applied as a tail insert that leaves visible cells and headers alone, anything else as a
+  `reloadData`. Cells are recycled and layer-backed, prefetch is native, and selection changes touch
+  only the cells AppKit has instantiated. The `ThumbnailLoader` actor does authenticated fetches
+  through `GoogleSession`, ImageIO downsampling off the main thread and keeps a cost-limited
+  `NSCache` that cells read synchronously, so a reload never blanks a photo that is already loaded.
 - **Downloads** (`Photos/DownloadManager.swift`) stream `=d`/`=dv` originals through the
   cookie-bridged session into a security-scoped folder, hold a sleep assertion for exactly the
   run, and release each photo from the selection as its file lands.

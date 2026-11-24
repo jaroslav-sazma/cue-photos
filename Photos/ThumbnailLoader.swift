@@ -7,7 +7,9 @@ import os
 // in-memory cache (never disk — see PRIVACY.md), in-flight de-duplication.
 actor ThumbnailLoader {
     private let googleSession: GoogleSession
-    private let cache = NSCache<NSString, CachedThumbnail>()
+    // NSCache is thread-safe but not marked Sendable: grid cells read it
+    // synchronously so a cached image lands in the same frame, not after an actor hop
+    private nonisolated(unsafe) let cache = NSCache<NSString, CachedThumbnail>()
     // decoded images are ~1 MB each and evict fast; the encoded originals are
     // ~30 kB, so this tier keeps whole albums re-decodable without the network
     private let dataCache = NSCache<NSString, NSData>()
@@ -30,9 +32,13 @@ actor ThumbnailLoader {
         dataCache.removeAllObjects()
     }
 
+    nonisolated func cachedThumbnail(pixelSize: Int, cacheKey: String, crop: Bool = true) -> CGImage? {
+        cache.object(forKey: Self.key(cacheKey, pixelSize: pixelSize, crop: crop))?.image
+    }
+
     // cacheKey outlives the URL on purpose: thumbnail base URLs rotate and expire
     func thumbnail(base: String, pixelSize: Int, cacheKey: String, crop: Bool = true) async throws -> CGImage {
-        let key = "\(cacheKey)#\(pixelSize)\(crop ? "" : "f")" as NSString
+        let key = Self.key(cacheKey, pixelSize: pixelSize, crop: crop)
         if let hit = cache.object(forKey: key) {
             return hit.image
         }
@@ -81,6 +87,10 @@ actor ThumbnailLoader {
         }
     }
 
+    private nonisolated static func key(_ cacheKey: String, pixelSize: Int, crop: Bool) -> NSString {
+        "\(cacheKey)#\(pixelSize)\(crop ? "" : "f")" as NSString
+    }
+
     private nonisolated static func decode(_ data: Data, maxPixelSize: Int) throws -> CGImage {
         let sourceOptions: [CFString: Any] = [kCGImageSourceShouldCache: false]
         guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary) else {
@@ -100,7 +110,7 @@ actor ThumbnailLoader {
     }
 }
 
-private nonisolated final class CachedThumbnail {
+private nonisolated final class CachedThumbnail: Sendable {
     let image: CGImage
 
     init(_ image: CGImage) {

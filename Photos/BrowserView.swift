@@ -2,9 +2,8 @@ import SwiftUI
 
 struct BrowserView: View {
     @Environment(AppModel.self) private var model
-    @State private var sections: [PhotoSection] = []
-    @State private var sectionsRevision = 0
-    @State private var flatItems: [MediaItem] = []
+    @State private var grid = PhotoGrid()
+    @State private var assembler = GridAssembler()
     @State private var sectioningTask: Task<Void, Never>?
 
     var body: some View {
@@ -23,7 +22,7 @@ struct BrowserView: View {
             .animation(.snappy, value: model.notice)
         }
         .toolbarVisibility(model.lightbox == nil ? .automatic : .hidden, for: .windowToolbar)
-        .task(id: sectionInputs) { recomputeSections() }
+        .task(id: GridTrigger(key: gridKey, sourceRevision: sourceRevision)) { recomputeGrid() }
         .task(id: destinationKey) { await loadDestination() }
     }
 
@@ -34,41 +33,29 @@ struct BrowserView: View {
         return nil
     }
 
-    private var sourceItems: [MediaItem] {
-        switch model.ui.destination {
-        case .library: model.library.items
-        case .album: model.albumContents.items
-        case .trash: model.trash.items
-        case .selection: model.selectionItems()
-        }
-    }
-
-    // revisions, not counts: a refresh can swap 500 items for 500 different ones
-    private struct SectionInputs: Equatable {
-        var destinationKey: String
-        var sort: PhotoSortOrder
-        var grouping: PhotoGrouping
-        var scope: PhotoFilterScope
-        var range: ClosedRange<Date>?
-        var sourceRevision: Int
-        var membershipRevision: Int
-        var selectionRevision: Int
-        var libraryRevision: Int
-    }
-
-    private var sectionInputs: SectionInputs {
+    private var gridKey: GridKey {
         let isSelection = model.ui.destination == .selection
-        return SectionInputs(
+        return GridKey(
             destinationKey: destinationKey,
             sort: model.ui.sort,
             grouping: model.ui.grouping,
             scope: effectiveScope,
             range: model.ui.dateRange,
-            sourceRevision: sourceRevision,
+            sourceEpoch: sourceEpoch,
             membershipRevision: effectiveScope == .outsideAnyAlbum ? model.membership.revision : 0,
             selectionRevision: isSelection ? model.selection.revision : 0,
             libraryRevision: isSelection ? model.library.revision : 0
         )
+    }
+
+    // trash and selection have no append-only contract; their revision rebuilds
+    private var sourceEpoch: Int {
+        switch model.ui.destination {
+        case .library: model.library.epoch
+        case .album: model.albumContents.epoch
+        case .trash: model.trash.revision
+        case .selection: model.selection.revision
+        }
     }
 
     private var sourceRevision: Int {
@@ -93,44 +80,31 @@ struct BrowserView: View {
         model.ui.destination == .library ? model.ui.scope : .all
     }
 
-    private var sourceReady: Bool {
-        switch model.ui.destination {
-        case .library: model.library.phase == .ready
-        case .album: model.albumContents.phase == .ready
-        case .trash: model.trash.phase == .ready
-        case .selection: true
+    // grid assembly runs off the main actor: a large library must not stall a click
+    private func recomputeGrid() {
+        let key = gridKey
+        let options = PhotoGridOptions(
+            sort: key.sort,
+            grouping: key.grouping,
+            scope: key.scope,
+            dedupKeysInAlbums: key.scope == .outsideAnyAlbum ? model.membership.dedupKeysInAlbums : [],
+            dateRange: key.range
+        )
+        let source: GridSource = switch model.ui.destination {
+        case .library: .items(model.library.items)
+        case .album: .items(model.albumContents.items)
+        case .trash: .items(model.trash.items)
+        case .selection: .selection(model.selection.sortedEntries, library: model.library.items)
         }
-    }
-
-    // sectioning runs off the main actor: 50k items must not stall a click
-    private func recomputeSections() {
-        let inputs = sectionInputs
-        let items = sourceItems
-        let membership = model.membership.dedupKeysInAlbums
+        let assembler = assembler
         sectioningTask?.cancel()
         sectioningTask = Task {
-            let computed = await Self.makeSections(items: items, inputs: inputs, membership: membership)
+            // a superseded call must not rebuild the actor's builder from an older list
             guard !Task.isCancelled else { return }
-            sections = computed
-            sectionsRevision += 1
-            flatItems = computed.flatMap(\.items)
+            let computed = await assembler.grid(from: source, options: options, key: key)
+            guard let computed, !Task.isCancelled else { return }
+            grid = computed
         }
-    }
-
-    @concurrent
-    private nonisolated static func makeSections(
-        items: [MediaItem],
-        inputs: SectionInputs,
-        membership: Set<String>
-    ) async -> [PhotoSection] {
-        PhotoSectioner.sections(
-            from: items,
-            sort: inputs.sort,
-            grouping: inputs.grouping,
-            scope: inputs.scope,
-            dedupKeysInAlbums: membership,
-            dateRange: inputs.range
-        )
     }
 
     private func loadDestination() async {
@@ -195,18 +169,23 @@ struct BrowserView: View {
     private var content: some View {
         if effectiveScope == .outsideAnyAlbum, model.membership.phase != .ready {
             membershipGate
-        } else if sections.isEmpty {
+        } else if grid.isEmpty {
             emptyState
         } else {
+            let selection = model.selection
             PhotoGridView(
-                sections: sections,
-                dataRevision: sectionsRevision,
+                grid: grid,
+                contentIdentity: contentIdentity,
                 columns: model.ui.columns,
-                selectedKeys: Set(model.selection.entries.keys),
+                selectionRevision: selection.revision,
+                isSelected: { selection.isSelected($0) },
                 thumbnails: model.thumbnails,
                 onToggle: handleToggle,
                 onSelectSection: { model.selection.select($0, in: contextAlbum) },
-                onOpenLightbox: { model.openLightbox($0, in: flatItems, album: contextAlbum) }
+                onOpenLightbox: { item, hint in
+                    guard let index = resolve(item, hint: hint) else { return }
+                    model.openLightbox(at: index, in: grid, album: contextAlbum)
+                }
             )
         }
     }
@@ -379,15 +358,26 @@ struct BrowserView: View {
         }
     }
 
+    // a change of what is shown (not a page streaming in) starts at the top
+    private var contentIdentity: String {
+        let range = model.ui.dateRange.map { "\($0.lowerBound.timeIntervalSince1970)-\($0.upperBound.timeIntervalSince1970)" } ?? ""
+        return "\(destinationKey)|\(model.ui.sort)|\(model.ui.grouping)|\(effectiveScope)|\(range)"
+    }
+
     // MARK: selection
 
-    private func handleToggle(_ item: MediaItem, rangeSelect: Bool) {
+    private func resolve(_ item: MediaItem, hint: Int) -> Int? {
+        if grid.indices.contains(hint), grid[hint].dedupKey == item.dedupKey { return hint }
+        return grid.firstIndex { $0.dedupKey == item.dedupKey }
+    }
+
+    private func handleToggle(_ item: MediaItem, hint: Int, rangeSelect: Bool) {
         if rangeSelect,
+           let itemIndex = resolve(item, hint: hint),
            let anchor = model.lastToggledKey,
-           let anchorIndex = flatItems.firstIndex(where: { $0.dedupKey == anchor }),
-           let itemIndex = flatItems.firstIndex(where: { $0.dedupKey == item.dedupKey }) {
+           let anchorIndex = grid.firstIndex(where: { $0.dedupKey == anchor }) {
             let range = min(anchorIndex, itemIndex)...max(anchorIndex, itemIndex)
-            model.selection.select(Array(flatItems[range]), in: contextAlbum)
+            model.selection.select(Array(grid[range]), in: contextAlbum)
         } else {
             model.selection.toggle(item, in: contextAlbum)
         }
@@ -423,5 +413,49 @@ private struct ColumnsControl: View {
             }
             .padding(12)
         }
+    }
+}
+
+nonisolated private struct GridKey: Equatable, Sendable {
+    var destinationKey: String
+    var sort: PhotoSortOrder
+    var grouping: PhotoGrouping
+    var scope: PhotoFilterScope
+    var range: ClosedRange<Date>?
+    var sourceEpoch: Int
+    var membershipRevision: Int
+    var selectionRevision: Int
+    var libraryRevision: Int
+}
+
+// revisions, not counts: a refresh can swap 500 items for 500 different ones
+nonisolated private struct GridTrigger: Equatable {
+    var key: GridKey
+    var sourceRevision: Int
+}
+
+nonisolated private enum GridSource: Sendable {
+    case items([MediaItem])
+    case selection([SelectionStore.Entry], library: [MediaItem])
+}
+
+// Owns the incremental builder off the main actor, so a streamed page extends it
+// in place instead of copying its dedup set on every publish
+private actor GridAssembler {
+    private var builder: PhotoGridBuilder?
+    private var key: GridKey?
+
+    func grid(from source: GridSource, options: PhotoGridOptions, key: GridKey) -> PhotoGrid? {
+        guard !Task.isCancelled else { return nil }
+        let items = switch source {
+        case .items(let items): items
+        case .selection(let entries, let library): SelectionStore.items(for: entries, preferring: library)
+        }
+        if self.key == key, builder?.extend(to: items) == true, let grid = builder?.grid {
+            return grid
+        }
+        builder = PhotoGridBuilder(source: items, options: options)
+        self.key = key
+        return builder!.grid
     }
 }

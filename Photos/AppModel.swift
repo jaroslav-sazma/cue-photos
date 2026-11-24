@@ -96,16 +96,8 @@ final class AppModel {
             .sorted(by: ui.albumSort)
     }
 
-    // Items for the Selection view: prefer the live library item (fresh thumb URL),
-    // fall back to what the persisted entry remembers
     func selectionItems() -> [MediaItem] {
-        let byDedupKey = Dictionary(
-            library.items.map { ($0.dedupKey, $0) },
-            uniquingKeysWith: { first, _ in first }
-        )
-        return selection.sortedEntries.map { entry in
-            byDedupKey[entry.dedupKey] ?? MediaItem(from: entry)
-        }
+        SelectionStore.items(for: selection.sortedEntries, preferring: library.items)
     }
 
     private var undoExpiryTask: Task<Void, Never>?
@@ -129,7 +121,7 @@ final class AppModel {
     // MARK: lightbox
 
     nonisolated struct LightboxState {
-        var items: [MediaItem]
+        var items: PhotoGrid
         var index: Int
         var album: Album?
 
@@ -138,9 +130,9 @@ final class AppModel {
 
     var lightbox: LightboxState?
 
-    func openLightbox(_ item: MediaItem, in flatItems: [MediaItem], album: Album?) {
-        guard let index = flatItems.firstIndex(where: { $0.dedupKey == item.dedupKey }) else { return }
-        lightbox = LightboxState(items: flatItems, index: index, album: album)
+    func openLightbox(at index: Int, in grid: PhotoGrid, album: Album?) {
+        guard grid.indices.contains(index) else { return }
+        lightbox = LightboxState(items: grid, index: index, album: album)
     }
 
     // MARK: notices
@@ -197,7 +189,17 @@ final class AppModel {
         trashConfirmationShown = true
     }
 
+    // Snapshotted when the dialog opens: its title must not tie the whole window to
+    // every album page and selection change, and the removal takes exactly the photos
+    // the title counted, from the album it was asked in
+    private var pendingRemoval: (albumKey: String, dedupKeys: Set<String>)?
+    private(set) var pendingRemovalCount = 0
+
     func confirmRemoveFromAlbum() {
+        guard case .album(let album) = ui.destination else { return }
+        let keys = Set(removableFromCurrentAlbum.map(\.dedupKey))
+        pendingRemoval = (album.mediaKey, keys)
+        pendingRemovalCount = keys.count
         removeFromAlbumConfirmationShown = true
     }
 
@@ -219,8 +221,11 @@ final class AppModel {
     }
 
     func removeSelectionFromAlbum() async {
-        guard case .album(let album) = ui.destination else { return }
-        let items = removableFromCurrentAlbum
+        let confirmed = pendingRemoval
+        pendingRemoval = nil
+        guard case .album(let album) = ui.destination, let confirmed,
+              confirmed.albumKey == album.mediaKey else { return }
+        let items = removableFromCurrentAlbum.filter { confirmed.dedupKeys.contains($0.dedupKey) }
         guard !items.isEmpty, !isBulkWorking, !downloads.isActive else { return }
         // the album list identifies a shared album by a key LjmOue rejects; the
         // album's own pages report the share token it requires

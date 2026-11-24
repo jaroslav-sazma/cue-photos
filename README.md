@@ -30,7 +30,8 @@ Safari would), and nothing ever leaves the connection between your Mac and Googl
 ## What it does
 
 - **Browse** your whole timeline or any album, grouped by day or month, 2–12 columns, with fast
-  native thumbnails — built to stay smooth at tens of thousands of photos.
+  native thumbnails — built to stay smooth at hundreds of thousands of photos. A large library fills
+  in while it loads, newest photos first.
 - **Find unsorted photos**: the "Not in album" filter shows exactly the photos that are in no
   album, the one view Google Photos itself refuses to offer.
 - **Select across everything**: the selection follows you across albums, filters and views, and
