@@ -52,12 +52,14 @@ map's imagery, which comes from Apple while the map is open.
   every word you type, so "🏖 Italy" finds every album that has both. "Export…" and "Import…" carry
   the list to another Mac or over a reinstall; deleting a label leaves album names as they are.
 - **See it on a map**: More → "Show on Map" places the photos of the current view on a map — the
-  library, an album or the selection, with the filters you have on — once the view and your
-  library have finished loading. It opens zoomed to fit every photo; photos taken within about a
-  kilometre of each other share a pin that shows how many photos it holds, and pins gather into
-  groups as you zoom out. Click a pin to open its photos in the lightbox, a group to zoom in to
-  it (a group that zooming cannot split any further opens in the lightbox, too), and switch
-  between Map, Satellite and Hybrid at the top.
+  library, an album or the selection, with the filters you have on. It opens zoomed to fit every
+  photo; photos taken within about a kilometre of each other share a pin that shows how many
+  photos it holds, and pins gather into groups as you zoom out. Click a pin to open its photos in
+  the lightbox, a group to zoom in to it (a group that zooming cannot split any further opens in
+  the lightbox, too), and switch between Map, Satellite and Hybrid at the top. "Show on Map"
+  stays greyed out until your whole library has finished loading, because photo locations come
+  with the library listing; in an album it also waits for the whole album, and with the "Not in
+  album" filter on for the album index.
 - **Download** the selection into a folder of your choice, with original file names, a progress
   bar, sleep prevention while running and a quit guard. Photos come as full-quality originals;
   videos come from Google's download endpoint, which serves a transcoded rendition.
