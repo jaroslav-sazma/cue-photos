@@ -120,9 +120,11 @@ struct RenameAlbumSheet: View {
             isWorking = false
             if let failure {
                 errorText = failure
-            } else {
+            } else if canShare {
                 // the sheet stays open so a rename and an invite fit one visit
                 savedName = trimmedName
+            } else {
+                dismiss()
             }
         }
     }
