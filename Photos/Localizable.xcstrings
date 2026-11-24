@@ -747,6 +747,16 @@
         }
       }
     },
+    "Hybrid": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hybrid"
+          }
+        }
+      }
+    },
     "Imported %lld labels": {
       "localizations": {
         "cs": {
@@ -839,6 +849,16 @@
         }
       }
     },
+    "Library": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna"
+          }
+        }
+      }
+    },
     "Limit to date range": {
       "localizations": {
         "cs": {
@@ -875,6 +895,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Načítám fotky… %lld"
+          }
+        }
+      }
+    },
+    "Map": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa"
+          }
+        }
+      }
+    },
+    "Map style": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Styl mapy"
           }
         }
       }
@@ -1053,6 +1093,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Žádné fotky"
+          }
+        }
+      }
+    },
+    "No photos with a location": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádné fotky s polohou"
+          }
+        }
+      }
+    },
+    "None of the photos in this view have a location in Google Photos.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádná z fotek v tomto zobrazení nemá v Google Fotkách polohu."
           }
         }
       }
@@ -1455,6 +1515,16 @@
         }
       }
     },
+    "Satellite": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satelit"
+          }
+        }
+      }
+    },
     "Save": {
       "localizations": {
         "cs": {
@@ -1551,6 +1621,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sdílet album"
+          }
+        }
+      }
+    },
+    "Show on Map": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit na mapě"
           }
         }
       }
@@ -1731,6 +1811,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verze %@"
+          }
+        }
+      }
+    },
+    "With location: %lld of %lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S polohou: %1$lld z %2$lld"
           }
         }
       }

@@ -17,7 +17,8 @@ API layer is vendored from the excellent MIT-licensed
 
 Plainly: the app clicks through the official Google Photos web for you. Nothing is scraped from
 the page, no credentials are stored by the app (the system web view holds the session, like
-Safari would), and nothing ever leaves the connection between your Mac and Google.
+Safari would), and nothing ever leaves the connection between your Mac and Google — except the
+map's imagery, which comes from Apple while the map is open.
 
 ## Screenshots
 
@@ -47,6 +48,13 @@ Safari would), and nothing ever leaves the connection between your Mac and Googl
   emoji buttons under the album search filter the album list by label, and the search matches
   every word you type, so "🏖 Italy" finds every album that has both. "Export…" and "Import…" carry
   the list to another Mac or over a reinstall; deleting a label leaves album names as they are.
+- **See it on a map**: More → "Show on Map" places the photos of the current view on a map — the
+  library, an album or the selection, with the filters you have on — once the view and your
+  library have finished loading. It opens zoomed to fit every photo; photos taken within about a
+  kilometre of each other share a pin that shows how many photos it holds, and pins gather into
+  groups as you zoom out. Click a pin to open its photos in the lightbox, a group to zoom in to
+  it (a group that zooming cannot split any further opens in the lightbox, too), and switch
+  between Map, Satellite and Hybrid at the top.
 - **Download** the selection into a folder of your choice, with original file names, a progress
   bar, sleep prevention while running and a quit guard. Photos come as full-quality originals;
   videos come from Google's download endpoint, which serves a transcoded rendition.
@@ -70,6 +78,10 @@ Safari would), and nothing ever leaves the connection between your Mac and Googl
 - Downloads use the same media endpoints the web app uses. If EXIF/GPS fidelity is critical for
   your archive, verify a few downloaded photos first; videos are transcoded by Google's
   endpoint.
+- The map shows only photos that have a location in Google Photos. Google reports locations only
+  for photos in your library, so a photo in an album gets its location from your library copy.
+  Photos in shared albums that you have not saved to your library have no location there and
+  stay off the map. The trash has no map for the same reason.
 - One Google account at a time; switching accounts resets the app's local state, except your
   album labels.
 
@@ -87,8 +99,9 @@ submodule, tests and the release process.
 
 ## Privacy
 
-No telemetry, no analytics, no accounts, no servers of ours. See `PRIVACY.md` for the complete
-picture of what is stored locally and what talks to whom.
+No telemetry, no analytics, no accounts, no servers of ours. The map loads its imagery from Apple
+while it is open, which shows Apple the area on screen; your photos' coordinates never leave your
+Mac. See `PRIVACY.md` for the complete picture of what is stored locally and what talks to whom.
 
 ## Credits & license
 

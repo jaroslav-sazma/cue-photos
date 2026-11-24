@@ -54,6 +54,15 @@ nonisolated struct PhotoGrid: RandomAccessCollection, Sendable {
         source[order[position]]
     }
 
+    // positions into this grid, kept in the given order; the lightbox walks a subset by
+    // position only, so it carries no sections
+    func subset(_ positions: [Int]) -> PhotoGrid {
+        var subset = PhotoGrid(grouping: grouping, calendar: calendar)
+        subset.source = source
+        subset.order = positions.map { order[$0] }
+        return subset
+    }
+
     // formatted per visible header only: thousands of day titles cost more than the sectioning
     func title(of section: Section) -> String {
         switch grouping {

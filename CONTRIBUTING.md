@@ -70,6 +70,22 @@ documentation lives in `README.md`, the privacy picture in `PRIVACY.md`.
   only the cells AppKit has instantiated. The `ThumbnailLoader` actor does authenticated fetches
   through `GoogleSession`, ImageIO downsampling off the main thread and keeps a cost-limited
   `NSCache` that cells read synchronously, so a reload never blanks a photo that is already loaded.
+- **The map** (`Photos/PhotoMapView.swift`) is a modal over the window like the lightbox, wrapping
+  `MKMapView` because SwiftUI's `Map` cannot cluster annotations. Coordinates come from the
+  Toolkit's `geoLocation` on library timeline items (integer degrees × 10⁷, latitude first).
+  Album and trash pages carry none, so album and selection photos borrow the library's location
+  by `dedupKey`; the trash has no map. The location rides on every photo in the wire format
+  (two `Int32`, +8 B per photo). `PhotoMapBuilder` (`PhotosModel/PhotoMap.swift`, unit-tested)
+  builds seven levels of detail off the main actor (~90 ms for 300k photos): photos merge into
+  cells of 0.01° (~1 km) and each further level merges four times coarser cells. Nodes hold grid
+  positions, never photo copies. On every region change the map hands MapKit only the level
+  whose cells are at least a pin wide, around the visible region — at most a few hundred
+  annotations on screen whatever the library size, since MapKit creates a view per visible
+  annotation; MapKit's clustering only resolves the pins that still collide. Pins are system
+  markers carrying the photo count, never thumbnails: a photo would hide the place it marks.
+  Rotation and pitch are off: a rotated map's `visibleMapRect` is a bounding box that both the
+  level choice and the zoom-or-open decision on a group click would misread. The map's state
+  lives in a view keyed per opening and goes away on close.
 - **Downloads** (`Photos/DownloadManager.swift`) stream `=d`/`=dv` originals through the
   cookie-bridged session into a security-scoped folder, hold a sleep assertion for exactly the
   run, and release each photo from the selection as its file lands.
@@ -119,7 +135,10 @@ hidden page is inspectable from Safari's Develop menu.
 ## Rules that are not negotiable
 
 - Privacy: no telemetry, no analytics, nothing leaves the user's Mac except their own Google
-  session. Media metadata is `privacy: .private` in logs and never logged above debug.
+  session. The single exception is the map tiles MapKit loads from Apple while the map is open;
+  they reveal the area on screen, which follows the photos, but photo coordinates themselves
+  never leave the Mac. Media metadata is `privacy: .private` in logs and never logged above
+  debug.
 - No background activity beyond a user-started task; a running download may hold a sleep
   assertion and must release it when it ends.
 - The native UI never scrapes or overlays Google's DOM; everything crosses the bridge as JSON.

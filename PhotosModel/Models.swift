@@ -99,8 +99,10 @@ nonisolated struct MediaItem: Codable, Identifiable, Hashable, Sendable {
     var isArchived: Bool?
     var isFavorite: Bool?
     var isOwned: Bool?
+    var geoLocation: GeoLocation?
 
     var id: String { mediaKey }
+    var coordinate: GeoCoordinate? { geoLocation?.coordinate }
 
     // thumb is a lh3.googleusercontent.com base url; size parameters follow Google's image
     // serving syntax

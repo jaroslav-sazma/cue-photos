@@ -30,6 +30,9 @@ final class BrowseState {
     var albumSort: AlbumSortOrder {
         didSet { defaults.set(albumSort.rawValue, forKey: "browse.albumSort") }
     }
+    var mapStyle: PhotoMapStyle {
+        didSet { defaults.set(mapStyle.rawValue, forKey: "browse.mapStyle") }
+    }
 
     var dateRangeEnabled = false
     var dateFrom = Calendar.current.date(byAdding: .month, value: -3, to: .now) ?? .now
@@ -57,6 +60,7 @@ final class BrowseState {
         columns = (2...12).contains(storedColumns) ? storedColumns : 6
         scope = PhotoFilterScope(rawValue: defaults.string(forKey: "browse.scope") ?? "") ?? .all
         albumSort = AlbumSortOrder(rawValue: defaults.string(forKey: "browse.albumSort") ?? "") ?? .newestFirst
+        mapStyle = PhotoMapStyle(rawValue: defaults.string(forKey: "browse.mapStyle") ?? "") ?? .standard
     }
 
     func resetFilters() {

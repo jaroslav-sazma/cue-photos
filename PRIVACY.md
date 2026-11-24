@@ -2,7 +2,7 @@
 
 Short version: the app has no servers, no telemetry, no analytics and no accounts of its own.
 Your data flows exclusively between your Mac and Google, inside the Google session you sign in
-to yourself.
+to yourself. The one exception is the map: while it is open, its imagery comes from Apple.
 
 ## What talks to whom
 
@@ -13,6 +13,12 @@ to yourself.
   party, proxy or backend. Email addresses you type to invite someone to an album go only to
   Google as part of that request; the app does not keep them.
 - Thumbnails and originals are fetched from Google's media servers with the same session.
+- Photo locations arrive from Google with the library listing and stay in memory. The map
+  (More → "Show on Map") places them on your Mac and never sends the coordinates anywhere. Its
+  map imagery is Apple's MapKit, which downloads the tiles for the area on screen from Apple's
+  servers, only while the map is open. The map opens on, and zooms to, the area your photos
+  cover, so those tile requests show Apple that area at the zoom you see — not which photos are
+  there or their exact positions. Apple handles them under its own Apple Maps privacy policy.
 
 ## What the app stores locally
 
@@ -25,14 +31,15 @@ to yourself.
 - **Your album labels** (emoji and names) in the same folder. They stay on this Mac; Google sees
   only the emoji you put into an album name. An export goes only to the file you pick. They
   belong to no Google account, so Sign Out and an account switch keep them.
-- **View preferences** (sort order, columns, grouping) and a salted hash of the signed-in
+- **View preferences** (sort order, columns, grouping, map style) and a salted hash of the signed-in
   account identifier — used only to detect an account switch and reset local state — in the
   app's preferences.
 - Downloads go only to the folder you pick.
 
 ## What the app never does
 
-- It never sends anything to anyone other than Google within your own session.
+- Apart from the map tiles above, it never sends anything to anyone other than Google within your
+  own session.
 - It never reads your photos from the web page or modifies it; it reads only the page's session
   tokens and browser identification, and talks to the same internal API endpoints the page
   uses, nothing else.

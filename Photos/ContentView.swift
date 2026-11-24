@@ -44,6 +44,10 @@ struct ContentView: View {
                 ConnectedView()
             }
 
+            // opaque: it must never cover the login page after a mid-session sign-out
+            if model.runtime.state == .ready {
+                PhotoMapView()
+            }
             LightboxView()
         }
         .frame(minWidth: 900, minHeight: 560)

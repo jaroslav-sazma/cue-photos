@@ -73,6 +73,7 @@ final class AppModel {
             lastClearedSelection = []
             lastToggledKey = nil
             lightbox = nil
+            map = nil
             ui.destination = .library
             albumsStore.reset()
             library.reset()
@@ -133,6 +134,33 @@ final class AppModel {
     func openLightbox(at index: Int, in grid: PhotoGrid, album: Album?) {
         guard grid.indices.contains(index) else { return }
         lightbox = LightboxState(items: grid, index: index, album: album)
+    }
+
+    // MARK: map
+
+    nonisolated struct MapState: Identifiable {
+        let id = UUID()
+        var title: String
+        var items: PhotoGrid
+        var album: Album?
+        var borrowsLibraryLocations: Bool
+    }
+
+    var map: MapState?
+
+    func openMap(title: String, grid: PhotoGrid, album: Album?) {
+        map = MapState(
+            title: title,
+            items: grid,
+            album: album,
+            borrowsLibraryLocations: ui.destination != .library
+        )
+    }
+
+    // a spot on the map opens in the lightbox as its own little grid, so stepping stays there
+    func openLightbox(positions: [Int]) {
+        guard let map, !positions.isEmpty else { return }
+        openLightbox(at: 0, in: map.items.subset(positions), album: map.album)
     }
 
     // MARK: notices
@@ -376,6 +404,7 @@ final class AppModel {
         lastClearedSelection = []
         lastToggledKey = nil
         lightbox = nil
+        map = nil
         ui.destination = .library
         bootstrapped = false
         albumsStore.reset()

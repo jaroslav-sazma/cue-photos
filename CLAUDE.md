@@ -30,6 +30,9 @@ after every change that touches what they describe.
   system control exists.
 - Privacy is absolute: no telemetry, no analytics, no data collection of any kind. Data flows only
   between the user's Mac and Google's servers inside the user's own session. Nothing else, ever.
+  The single exception (owner decision 2026-11-24): the map loads Apple Maps tiles through
+  MapKit while it is open; the tiles reveal the area on screen, which follows the photos, but
+  photo coordinates themselves never leave the Mac.
 - No background activity: every flow starts from a user action. The single exception is a running
   download/task the user started, which may hold a sleep assertion while it runs and must release
   it the moment it finishes or fails.

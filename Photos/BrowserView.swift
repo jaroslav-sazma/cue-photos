@@ -21,7 +21,7 @@ struct BrowserView: View {
             .padding(.bottom, 14)
             .animation(.snappy, value: model.notice)
         }
-        .toolbarVisibility(model.lightbox == nil ? .automatic : .hidden, for: .windowToolbar)
+        .toolbarVisibility(model.lightbox == nil && model.map == nil ? .automatic : .hidden, for: .windowToolbar)
         .task(id: GridTrigger(key: gridKey, sourceRevision: sourceRevision)) { recomputeGrid() }
         .task(id: destinationKey) { await loadDestination() }
     }
@@ -73,6 +73,27 @@ struct BrowserView: View {
         case .album(let album): "album:\(album.mediaKey)"
         case .trash: "trash"
         case .selection: "selection"
+        }
+    }
+
+    private var destinationTitle: String {
+        switch model.ui.destination {
+        case .library: String(localized: "Library")
+        case .album(let album): album.displayTitle
+        case .trash: String(localized: "Trash")
+        case .selection: String(localized: "Selection")
+        }
+    }
+
+    // A map of a half-loaded view would silently miss photos: album and selection photos
+    // borrow their location from the library, and the trash has none to borrow at all
+    private var canShowMap: Bool {
+        guard !grid.isEmpty, model.library.phase == .ready else { return false }
+        if effectiveScope == .outsideAnyAlbum, model.membership.phase != .ready { return false }
+        return switch model.ui.destination {
+        case .library, .selection: true
+        case .album: model.albumContents.phase == .ready
+        case .trash: false
         }
     }
 
@@ -340,6 +361,11 @@ struct BrowserView: View {
 
         ToolbarItem {
             Menu {
+                Button("Show on Map") {
+                    model.openMap(title: destinationTitle, grid: grid, album: contextAlbum)
+                }
+                .disabled(!canShowMap)
+                Divider()
                 Button("Album Labels…") {
                     model.labelsShown = true
                 }
