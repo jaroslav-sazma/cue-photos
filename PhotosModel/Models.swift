@@ -20,8 +20,10 @@ nonisolated struct Album: Codable, Identifiable, Hashable, Sendable {
     var newestPhotoTimestamp: Double? { timestampRange?.newest }
 }
 
-// Decodes leniently: a reshaped range must cost the album its date, not drop it from
-// the list. The newer end wins, so the pair's order does not matter.
+// Google wraps each end in an array ([[oldest, …], [newest, …]], owner's Z5xsfc
+// capture, 2026-11-24) and gptk passes the wrappers through. Decodes leniently: a
+// reshaped range must cost the album its date, not drop it from the list. The newer
+// end wins, so the pair's order does not matter.
 nonisolated struct PhotoDateRange: Codable, Hashable, Sendable {
     var newest: Double?
 
@@ -30,8 +32,21 @@ nonisolated struct PhotoDateRange: Codable, Hashable, Sendable {
     }
 
     init(from decoder: Decoder) {
-        let ends = try? decoder.singleValueContainer().decode([Lenient<Double>].self)
+        let ends = try? decoder.singleValueContainer().decode([End].self)
         newest = ends?.compactMap(\.value).max()
+    }
+
+    private struct End: Decodable {
+        let value: Double?
+
+        init(from decoder: Decoder) {
+            if let plain = try? decoder.singleValueContainer().decode(Double.self) {
+                value = plain
+                return
+            }
+            var wrapper = try? decoder.unkeyedContainer()
+            value = try? wrapper?.decode(Double.self)
+        }
     }
 
     func encode(to encoder: Encoder) throws {

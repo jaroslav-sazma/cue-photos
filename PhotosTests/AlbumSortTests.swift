@@ -12,6 +12,12 @@ struct AlbumSortTests {
         #expect(albums.map(\.newestPhotoTimestamp) == [1_760_000_000_000, nil, nil])
     }
 
+    @Test func rangeDecodesFromGooglesWrappedEnds() throws {
+        let json = #"[{"mediaKey":"q2","timestampRange":[[1793390171000,3600000],[1795560490000,3600000]]},{"mediaKey":"empty","timestampRange":[null,null]}]"#
+        let albums = try JSONDecoder().decode([Album].self, from: Data(json.utf8))
+        #expect(albums.map(\.newestPhotoTimestamp) == [1_795_560_490_000, nil])
+    }
+
     @Test func newestEndWinsWhateverThePairOrder() throws {
         let json = #"{"mediaKey":"a","timestampRange":[1760000000000,1700000000000]}"#
         let album = try JSONDecoder().decode(Album.self, from: Data(json.utf8))
